@@ -24,6 +24,11 @@ export default function Card({ className, children, tilt = true, glow = true }: 
   const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-4, 4]), springConfig)
   const glowX = useTransform(x, [-0.5, 0.5], [0, 100])
   const glowY = useTransform(y, [-0.5, 0.5], [0, 100])
+  const glowBackground = useTransform(
+    [glowX, glowY],
+    ([gx, gy]) =>
+      `radial-gradient(200px circle at ${gx}% ${gy}%, rgba(124,92,255,0.12), transparent 70%)`
+  )
 
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (reducedMotion || !ref.current) return
@@ -55,13 +60,7 @@ export default function Card({ className, children, tilt = true, glow = true }: 
       {glow && (
         <motion.div
           className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
-          style={{
-            background: useTransform(
-              [glowX, glowY],
-              ([gx, gy]) =>
-                `radial-gradient(200px circle at ${gx}% ${gy}%, rgba(124,92,255,0.12), transparent 70%)`
-            ),
-          }}
+          style={{ background: glowBackground }}
           aria-hidden
         />
       )}

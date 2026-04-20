@@ -146,7 +146,7 @@ export default function WhyVaese() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-5 text-base text-text-muted font-body max-w-xl mx-auto"
           >
-            These aren't promises. They're the baseline results our clients see once AI is
+            These aren&apos;t promises. They&apos;re the baseline results our clients see once AI is
             running their most critical workflows.
           </motion.p>
         </div>
