@@ -62,9 +62,11 @@ export default function Navigation() {
 
         {/* CTA */}
         <div className="hidden md:block">
-          <Button variant="primary" size="sm" glow>
-            Book a call
-          </Button>
+          <a href="https://calendar.app.google/omt8abRcd1YYqDcv5" target="_blank" rel="noopener noreferrer">
+            <Button variant="primary" size="sm" glow>
+              Book a call
+            </Button>
+          </a>
         </div>
 
         {/* Mobile toggle */}
@@ -98,9 +100,11 @@ export default function Navigation() {
               {link.label}
             </Link>
           ))}
-          <Button variant="primary" size="sm" className="mt-2 w-full" glow>
-            Book a call
-          </Button>
+          <a href="https://calendar.app.google/omt8abRcd1YYqDcv5" target="_blank" rel="noopener noreferrer" className="block mt-2">
+            <Button variant="primary" size="sm" className="w-full" glow>
+              Book a call
+            </Button>
+          </a>
         </div>
       </motion.div>
     </motion.header>

@@ -99,13 +99,15 @@ export default function CTA() {
           transition={{ duration: 0.7, delay: 0.4, type: 'spring', stiffness: 100 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <Button variant="primary" size="lg" glow className="group min-w-[220px]">
-            Book a strategy call
-            <ArrowRight
-              size={16}
-              className="transition-transform duration-200 group-hover:translate-x-1"
-            />
-          </Button>
+          <a href="https://calendar.app.google/omt8abRcd1YYqDcv5" target="_blank" rel="noopener noreferrer">
+            <Button variant="primary" size="lg" glow className="group min-w-[220px]">
+              Book a strategy call
+              <ArrowRight
+                size={16}
+                className="transition-transform duration-200 group-hover:translate-x-1"
+              />
+            </Button>
+          </a>
           <Button variant="secondary" size="lg">
             hello@vaese.ai
           </Button>

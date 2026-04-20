@@ -132,13 +132,15 @@ export default function Hero() {
               animate="visible"
               className="mt-10 flex flex-wrap gap-4"
             >
-              <Button variant="primary" size="lg" glow className="group">
-                Book a strategy call
-                <ArrowRight
-                  size={16}
-                  className="transition-transform duration-200 group-hover:translate-x-1"
-                />
-              </Button>
+              <a href="https://calendar.app.google/omt8abRcd1YYqDcv5" target="_blank" rel="noopener noreferrer">
+                <Button variant="primary" size="lg" glow className="group">
+                  Book a strategy call
+                  <ArrowRight
+                    size={16}
+                    className="transition-transform duration-200 group-hover:translate-x-1"
+                  />
+                </Button>
+              </a>
               <Button variant="secondary" size="lg">
                 See what we build
               </Button>
