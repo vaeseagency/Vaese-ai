@@ -2,125 +2,151 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import {
-  Zap, Mic, MessageSquare, Database, TrendingUp,
-  Brain, Plug, Code, BarChart3, Sparkles,
-} from 'lucide-react'
+import { Globe, Mic, Check, ArrowRight } from 'lucide-react'
 import Card from '@/components/ui/Card'
 import AnimatedText from '@/components/ui/AnimatedText'
-import { itemVariants } from '@/components/ui/Section'
+import Button from '@/components/ui/Button'
 
 const services = [
   {
-    icon: Zap,
-    title: 'AI Automation',
+    icon: Globe,
+    tag: 'Free — No catch',
+    title: 'Your Website, Built Free.',
+    tagline: 'A modern, high-converting website for your business — designed and built by us, at zero cost.',
     description:
-      'End-to-end workflow automation across every tool in your stack. Eliminate manual work, reduce errors, and move at machine speed.',
+      'Most agencies charge €3,000–€10,000 for what we deliver as our entry offer. We build it free because we believe the best way to show what AI-powered design looks like is to show you — not tell you.',
+    bullets: [
+      'Custom design tailored to your brand and industry',
+      'Mobile-first, fast-loading, SEO-optimised',
+      'Built with modern frameworks (Next.js / React)',
+      'Contact forms, booking integrations, analytics',
+      'Delivered within 2 weeks of kickoff',
+      'No hidden fees, no ongoing contracts required',
+    ],
     color: '#7C5CFF',
+    cta: 'Get your free website',
+    ctaHref: 'https://calendar.app.google/omt8abRcd1YYqDcv5',
   },
   {
     icon: Mic,
-    title: 'AI Voice Agents',
+    tag: 'Always on — 24/7',
+    title: 'AI Voice Agent.',
+    tagline: 'A voice AI that answers calls, qualifies leads, and books appointments — sounding indistinguishable from your best team member.',
     description:
-      'Inbound and outbound voice AI that sounds and responds like your best team member — 24 hours a day, at any call volume.',
+      'Built on the latest conversational AI models, our voice agents handle inbound and outbound calls with natural pacing, interruption handling, and contextual memory. It never sleeps, never misses a call, and never has a bad day.',
+    bullets: [
+      'Handles inbound enquiries and outbound follow-up',
+      'Qualifies leads with custom scripts and logic',
+      'Books appointments directly into your calendar',
+      'Connects to your CRM, sends summaries after every call',
+      'Multilingual — deploy in any language',
+      'Live in 7–14 days, fully customised to your business',
+    ],
     color: '#22D3EE',
-  },
-  {
-    icon: MessageSquare,
-    title: 'Custom AI Chatbots',
-    description:
-      'Trained on your data, branded to your voice, deployed anywhere. From website assistants to internal Slack bots.',
-    color: '#7C5CFF',
-  },
-  {
-    icon: Database,
-    title: 'RAG & Knowledge Systems',
-    description:
-      'Private AI that knows everything about your business — docs, policies, history — and surfaces answers instantly.',
-    color: '#22D3EE',
-  },
-  {
-    icon: TrendingUp,
-    title: 'AI Sales Agents',
-    description:
-      'Lead qualification, personalized outreach, and automated follow-up that runs your top-of-funnel on autopilot.',
-    color: '#7C5CFF',
-  },
-  {
-    icon: Brain,
-    title: 'Process Intelligence',
-    description:
-      'AI that audits your operations, maps every workflow, and identifies exactly where automation will deliver ROI.',
-    color: '#22D3EE',
-  },
-  {
-    icon: Plug,
-    title: 'AI Integrations',
-    description:
-      'Connect LLMs into your existing CRMs, ERPs, and platforms. Intelligence plugged directly into the tools you already use.',
-    color: '#7C5CFF',
-  },
-  {
-    icon: Code,
-    title: 'Custom AI Apps',
-    description:
-      'Bespoke internal tools and AI-powered dashboards built around your workflows — not templated SaaS features.',
-    color: '#22D3EE',
-  },
-  {
-    icon: BarChart3,
-    title: 'AI Analytics',
-    description:
-      'Real-time intelligence dashboards that surface what matters. Stop reporting on the past; start predicting the future.',
-    color: '#7C5CFF',
-  },
-  {
-    icon: Sparkles,
-    title: 'Model Fine-Tuning',
-    description:
-      'Custom LLMs trained on your proprietary data — smaller, faster, and dramatically more accurate for your domain.',
-    color: '#22D3EE',
+    cta: 'Book a strategy call',
+    ctaHref: 'https://calendar.app.google/omt8abRcd1YYqDcv5',
   },
 ]
 
-function ServiceCard({
-  service,
-  index,
-}: {
-  service: (typeof services)[0]
-  index: number
-}) {
+function ServiceCard({ service, index }: { service: (typeof services)[0]; index: number }) {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-50px 0px' })
+  const inView = useInView(ref, { once: true, margin: '-60px 0px' })
 
   return (
     <motion.div
       ref={ref}
-      variants={itemVariants}
-      initial="hidden"
-      animate={inView ? 'visible' : 'hidden'}
-      transition={{ delay: (index % 5) * 0.07 }}
+      initial={{ opacity: 0, y: 36 }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 }}
+      transition={{ duration: 0.75, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
+      className="h-full"
     >
-      <Card className="h-full p-6 lg:p-7">
-        {/* Icon */}
+      <Card className="h-full p-8 lg:p-10 flex flex-col">
+        {/* Tag */}
+        <div className="flex items-center gap-2 mb-6">
+          <span
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-body font-medium border"
+            style={{
+              color: service.color,
+              borderColor: `${service.color}30`,
+              background: `${service.color}0D`,
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ background: service.color }}
+              aria-hidden
+            />
+            {service.tag}
+          </span>
+        </div>
+
+        {/* Icon + Title */}
+        <div className="flex items-start gap-5 mb-6">
+          <div
+            className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 mt-0.5"
+            style={{ background: `${service.color}12`, border: `1px solid ${service.color}25` }}
+          >
+            <service.icon size={26} style={{ color: service.color }} strokeWidth={1.4} />
+          </div>
+          <div>
+            <h3 className="font-display font-bold text-[clamp(1.5rem,2.5vw,2rem)] leading-tight text-white">
+              {service.title}
+            </h3>
+            <p className="mt-2 text-sm font-body leading-relaxed" style={{ color: service.color }}>
+              {service.tagline}
+            </p>
+          </div>
+        </div>
+
+        {/* Description */}
+        <p className="font-body text-base text-text-muted leading-relaxed mb-7">
+          {service.description}
+        </p>
+
+        {/* Divider */}
         <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
-          style={{ background: `${service.color}14`, border: `1px solid ${service.color}20` }}
+          className="w-full h-px mb-7"
+          style={{
+            background: `linear-gradient(90deg, ${service.color}30, transparent)`,
+          }}
+          aria-hidden
+        />
+
+        {/* Bullets */}
+        <ul className="space-y-3 mb-8 flex-1">
+          {service.bullets.map((bullet) => (
+            <li key={bullet} className="flex items-start gap-3">
+              <Check
+                size={15}
+                className="flex-shrink-0 mt-0.5"
+                style={{ color: service.color }}
+                strokeWidth={2.5}
+              />
+              <span className="font-body text-sm text-text-muted leading-relaxed">{bullet}</span>
+            </li>
+          ))}
+        </ul>
+
+        {/* CTA */}
+        <a
+          href={service.ctaHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-auto"
         >
-          <service.icon size={20} style={{ color: service.color }} strokeWidth={1.5} />
-        </div>
-
-        <h3 className="font-display font-semibold text-base text-white mb-3">{service.title}</h3>
-        <p className="font-body text-sm text-text-muted leading-relaxed">{service.description}</p>
-
-        {/* Learn more link */}
-        <div className="mt-5 flex items-center gap-1.5 text-xs font-body font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ color: service.color }}>
-          Learn more
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-            <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
+          <Button
+            variant={index === 0 ? 'primary' : 'secondary'}
+            size="md"
+            glow={index === 0}
+            className="w-full group"
+          >
+            {service.cta}
+            <ArrowRight
+              size={15}
+              className="transition-transform duration-200 group-hover:translate-x-1"
+            />
+          </Button>
+        </a>
       </Card>
     </motion.div>
   )
@@ -139,11 +165,11 @@ export default function Services() {
             transition={{ duration: 0.6 }}
             className="text-xs font-body font-medium tracking-widest uppercase text-primary mb-4"
           >
-            What we build
+            What we offer
           </motion.p>
 
           <AnimatedText
-            text="Every layer of your AI stack."
+            text="Two offers. Both exceptional."
             tag="h2"
             mode="words"
             className="font-display font-semibold text-[clamp(2rem,4.5vw,3.5rem)] leading-tight text-white"
@@ -156,13 +182,13 @@ export default function Services() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-5 text-base text-text-muted font-body leading-relaxed"
           >
-            From first automation to fully autonomous operations — we design, build, and deploy the AI
-            infrastructure that runs your business.
+            We keep our focus tight so we can deliver at the highest level. A free website to
+            start the relationship — and an AI voice agent to transform how you handle every call.
           </motion.p>
         </div>
 
-        {/* Services grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        {/* Two-column cards */}
+        <div className="grid md:grid-cols-2 gap-6">
           {services.map((service, i) => (
             <ServiceCard key={service.title} service={service} index={i} />
           ))}

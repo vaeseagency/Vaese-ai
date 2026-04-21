@@ -108,9 +108,16 @@ export default function CTA() {
               />
             </Button>
           </a>
-          <Button variant="secondary" size="lg">
-            hello@vaese.ai
-          </Button>
+          <a href="mailto:agency@vaese.info">
+            <Button variant="secondary" size="lg">
+              agency@vaese.info
+            </Button>
+          </a>
+          <a href="tel:+31687862661">
+            <Button variant="ghost" size="lg">
+              +31 6 87862661
+            </Button>
+          </a>
         </motion.div>
 
         {/* Trust note */}

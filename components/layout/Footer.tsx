@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Github, Twitter, Linkedin, Mail } from 'lucide-react'
+import { Twitter, Linkedin, Mail, Phone } from 'lucide-react'
 
 const footerLinks = [
   { label: 'Services', href: '#services' },
@@ -11,8 +11,8 @@ const footerLinks = [
 const socials = [
   { icon: Twitter, href: '#', label: 'Twitter' },
   { icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { icon: Github, href: '#', label: 'GitHub' },
-  { icon: Mail, href: 'mailto:hello@vaese.ai', label: 'Email' },
+  { icon: Mail, href: 'mailto:agency@vaese.info', label: 'Email' },
+  { icon: Phone, href: 'tel:+31687862661', label: 'Phone' },
 ]
 
 export default function Footer() {
@@ -32,12 +32,29 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
           {/* Brand */}
           <div>
-            <span className="font-display text-xl font-semibold tracking-[0.12em] text-white">
-              VAESE
+            <span className="font-display text-xl font-black tracking-[0.12em] text-white">
+              VAESE AI
             </span>
             <p className="mt-2 text-sm text-text-muted max-w-xs">
               Building the autonomous layer for the next era of business.
             </p>
+            {/* Contact info */}
+            <div className="mt-4 flex flex-col gap-1.5">
+              <a
+                href="mailto:agency@vaese.info"
+                className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-white transition-colors duration-200"
+              >
+                <Mail size={13} className="text-primary" />
+                agency@vaese.info
+              </a>
+              <a
+                href="tel:+31687862661"
+                className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-white transition-colors duration-200"
+              >
+                <Phone size={13} className="text-primary" />
+                +31 6 87862661
+              </a>
+            </div>
           </div>
 
           {/* Links */}
@@ -75,7 +92,20 @@ export default function Footer() {
           <p className="text-xs text-text-muted">
             © {new Date().getFullYear()} Vaese AI. All rights reserved.
           </p>
-          <p className="text-xs text-text-muted">hello@vaese.ai</p>
+          <div className="flex items-center gap-5">
+            <a
+              href="mailto:agency@vaese.info"
+              className="text-xs text-text-muted hover:text-white transition-colors duration-200"
+            >
+              agency@vaese.info
+            </a>
+            <a
+              href="tel:+31687862661"
+              className="text-xs text-text-muted hover:text-white transition-colors duration-200"
+            >
+              +31 6 87862661
+            </a>
+          </div>
         </div>
       </div>
     </footer>

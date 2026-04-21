@@ -33,8 +33,8 @@ export default function Navigation() {
       <nav className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="group relative" aria-label="Vaese AI home">
-          <span className="font-display text-xl font-semibold tracking-[0.12em] text-white">
-            VAESE
+          <span className="font-display text-xl font-black tracking-[0.12em] text-white">
+            VAESE AI
           </span>
           <span
             className="absolute -bottom-1 left-0 w-full h-px bg-gradient-to-r from-primary to-cyan scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
