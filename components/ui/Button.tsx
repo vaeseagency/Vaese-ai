@@ -6,11 +6,12 @@ import { cn } from '@/lib/utils'
 type Variant = 'primary' | 'secondary' | 'ghost'
 type Size = 'sm' | 'md' | 'lg'
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
   variant?: Variant
   size?: Size
   glow?: boolean
   href?: string
+  onClick?: React.MouseEventHandler<HTMLElement>
 }
 
 const motionProps = {
@@ -59,7 +60,7 @@ export default function Button({
         href={href}
         {...motionProps}
         className={combinedClass}
-        onClick={props.onClick as React.MouseEventHandler<HTMLAnchorElement>}
+        onClick={props.onClick}
         aria-label={props['aria-label']}
       >
         {children}
