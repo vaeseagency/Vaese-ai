@@ -56,7 +56,7 @@ export default function CalInline({ calLink }: { calLink: string }) {
   return (
     <div
       ref={containerRef}
-      style={{ width: '100%', minHeight: '650px', overflow: 'hidden' }}
+      style={{ width: '100%', minHeight: '650px' }}
     />
   )
 }

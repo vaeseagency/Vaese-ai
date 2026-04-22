@@ -11,7 +11,7 @@ export default function CTA() {
   const bgScale = useTransform(scrollYProgress, [0, 1], [1.1, 0.95])
 
   return (
-    <section id="contact" className="section-padding relative overflow-hidden" ref={ref} aria-label="Book a call">
+    <section id="contact" className="section-padding relative" ref={ref} aria-label="Book a call">
       {/* Animated gradient background */}
       <motion.div
         className="pointer-events-none absolute inset-0 animated-gradient"
@@ -39,8 +39,8 @@ export default function CTA() {
         }}
       />
 
-      {/* Orbiting rings */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      {/* Orbiting rings — overflow-hidden scoped here to contain decorations */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-none" aria-hidden>
         {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
@@ -95,9 +95,9 @@ export default function CTA() {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0 }}
           transition={{ duration: 0.7, delay: 0.35 }}
-          className="rounded-2xl overflow-hidden border border-border-subtle"
+          className="rounded-2xl border border-border-subtle"
           style={{ background: 'rgba(10,11,20,0.5)' }}
         >
           <CalInline calLink="vaese-ai-x3fvop/30min" />
