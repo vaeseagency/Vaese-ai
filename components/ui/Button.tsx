@@ -10,6 +10,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
   size?: Size
   glow?: boolean
+  href?: string
+}
+
+const motionProps = {
+  whileHover: { scale: 1.02 },
+  whileTap: { scale: 0.98 },
+  transition: { type: 'spring' as const, stiffness: 400, damping: 20 },
 }
 
 export default function Button({
@@ -17,6 +24,7 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   glow = false,
+  href,
   children,
   ...props
 }: ButtonProps) {
@@ -35,25 +43,42 @@ export default function Button({
     lg: 'px-9 py-4 text-base',
   }
 
+  const glowEl = glow && variant === 'primary' && (
+    <span
+      className="pointer-events-none absolute inset-0 rounded-full animate-glow-pulse"
+      style={{ boxShadow: '0 0 0 8px rgba(124,92,255,0.15), 0 0 0 24px rgba(124,92,255,0.05)' }}
+      aria-hidden
+    />
+  )
+
+  const combinedClass = cn(base, variants[variant], sizes[size], className)
+
+  if (href) {
+    return (
+      <motion.a
+        href={href}
+        {...motionProps}
+        className={combinedClass}
+        onClick={props.onClick as React.MouseEventHandler<HTMLAnchorElement>}
+        aria-label={props['aria-label']}
+      >
+        {children}
+        {glowEl}
+      </motion.a>
+    )
+  }
+
   return (
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-      className={cn(base, variants[variant], sizes[size], className)}
+      {...motionProps}
+      className={combinedClass}
       onClick={props.onClick}
       disabled={props.disabled}
       type={props.type ?? 'button'}
       aria-label={props['aria-label']}
     >
       {children}
-      {glow && variant === 'primary' && (
-        <span
-          className="pointer-events-none absolute inset-0 rounded-full animate-glow-pulse"
-          style={{ boxShadow: '0 0 0 8px rgba(124,92,255,0.15), 0 0 0 24px rgba(124,92,255,0.05)' }}
-          aria-hidden
-        />
-      )}
+      {glowEl}
     </motion.button>
   )
 }

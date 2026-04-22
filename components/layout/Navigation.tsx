@@ -59,11 +59,9 @@ export default function Navigation() {
 
         {/* CTA */}
         <div className="hidden md:block">
-          <Link href="#contact">
-            <Button variant="primary" size="sm" glow>
-              Book a call
-            </Button>
-          </Link>
+          <Button variant="primary" size="sm" glow href="#contact">
+            Book a call
+          </Button>
         </div>
 
         {/* Mobile toggle */}
@@ -97,11 +95,16 @@ export default function Navigation() {
               {link.label}
             </Link>
           ))}
-          <Link href="#contact" className="block mt-2" onClick={() => setMobileOpen(false)}>
-            <Button variant="primary" size="sm" className="w-full" glow>
-              Book a call
-            </Button>
-          </Link>
+          <Button
+            variant="primary"
+            size="sm"
+            glow
+            href="#contact"
+            className="w-full mt-2"
+            onClick={() => setMobileOpen(false)}
+          >
+            Book a call
+          </Button>
         </div>
       </motion.div>
     </motion.header>

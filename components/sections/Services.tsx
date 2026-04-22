@@ -25,7 +25,7 @@ const services = [
     ],
     color: '#7C5CFF',
     cta: 'Get your free website',
-    ctaHref: 'https://calendar.app.google/omt8abRcd1YYqDcv5',
+    ctaHref: '#contact',
   },
   {
     icon: Mic,
@@ -44,7 +44,7 @@ const services = [
     ],
     color: '#22D3EE',
     cta: 'Book a strategy call',
-    ctaHref: 'https://calendar.app.google/omt8abRcd1YYqDcv5',
+    ctaHref: '#contact',
   },
 ]
 
@@ -128,25 +128,19 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
         </ul>
 
         {/* CTA */}
-        <a
+        <Button
+          variant={index === 0 ? 'primary' : 'secondary'}
+          size="md"
+          glow={index === 0}
           href={service.ctaHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-auto"
+          className="w-full group mt-auto"
         >
-          <Button
-            variant={index === 0 ? 'primary' : 'secondary'}
-            size="md"
-            glow={index === 0}
-            className="w-full group"
-          >
-            {service.cta}
-            <ArrowRight
-              size={15}
-              className="transition-transform duration-200 group-hover:translate-x-1"
-            />
-          </Button>
-        </a>
+          {service.cta}
+          <ArrowRight
+            size={15}
+            className="transition-transform duration-200 group-hover:translate-x-1"
+          />
+        </Button>
       </Card>
     </motion.div>
   )
