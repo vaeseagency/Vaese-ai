@@ -18,21 +18,28 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Vaese AI — Building the Autonomous Layer',
+  title: 'Vaese AI — AI Services for Business Growth',
   description:
-    'Vaese AI builds enterprise AI systems that automate workflows, deploy voice agents, and run business processes autonomously — so your team can focus on what matters.',
-  keywords: ['AI agency', 'AI automation', 'voice agents', 'AI chatbots', 'RAG', 'process automation', 'Vaese AI'],
+    'Vaese AI helps business owners grow and automate with AI — voice agents, websites, chatbots, automations, lead generation and sales categorization.',
+  keywords: ['AI agency', 'voice agents', 'chatbots', 'automatisering', 'AI diensten', 'Nederland'],
   openGraph: {
-    title: 'Vaese AI — Building the Autonomous Layer',
+    title: 'Vaese AI — AI Services for Business Growth',
     description:
-      'Vaese AI builds enterprise AI systems that automate workflows, deploy voice agents, and run business processes autonomously.',
+      'Vaese AI helps business owners grow and automate with AI — voice agents, websites, chatbots, automations, lead generation and sales categorization.',
     type: 'website',
     siteName: 'Vaese AI',
+    images: [{ url: '/logo.png' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Vaese AI — Building the Autonomous Layer',
-    description: 'Enterprise AI that thinks, acts, and scales.',
+    title: 'Vaese AI — AI Services for Business Growth',
+    description:
+      'Vaese AI helps business owners grow and automate with AI — voice agents, websites, chatbots, automations, lead generation and sales categorization.',
+  },
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
   },
   robots: { index: true, follow: true },
 }
