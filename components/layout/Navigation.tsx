@@ -37,9 +37,9 @@ export default function Navigation() {
           <Image
             src="/logo.png"
             alt="Vaese AI"
-            height={80}
-            width={240}
-            className="h-[80px] w-auto object-contain brightness-0 invert"
+            height={240}
+            width={720}
+            className="h-[240px] w-auto object-contain brightness-0 invert"
             priority
           />
         </Link>

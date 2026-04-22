@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     url: 'https://vaese.ai',
     siteName: 'Vaese AI',
     locale: 'nl_NL',
-    images: [{ url: '/logo.png', width: 1200, height: 630, alt: 'Vaese AI — AI Automatisering voor Bedrijven' }],
+    images: [{ url: '/logo.png', width: 720, height: 240, alt: 'Vaese AI — AI Automatisering voor Bedrijven' }],
   },
   twitter: {
     card: 'summary_large_image',
