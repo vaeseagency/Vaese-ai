@@ -59,11 +59,11 @@ export default function Navigation() {
 
         {/* CTA */}
         <div className="hidden md:block">
-          <a href="https://calendar.app.google/omt8abRcd1YYqDcv5" target="_blank" rel="noopener noreferrer">
+          <Link href="#contact">
             <Button variant="primary" size="sm" glow>
               Book a call
             </Button>
-          </a>
+          </Link>
         </div>
 
         {/* Mobile toggle */}
@@ -97,11 +97,11 @@ export default function Navigation() {
               {link.label}
             </Link>
           ))}
-          <a href="https://calendar.app.google/omt8abRcd1YYqDcv5" target="_blank" rel="noopener noreferrer" className="block mt-2">
+          <Link href="#contact" className="block mt-2" onClick={() => setMobileOpen(false)}>
             <Button variant="primary" size="sm" className="w-full" glow>
               Book a call
             </Button>
-          </a>
+          </Link>
         </div>
       </motion.div>
     </motion.header>

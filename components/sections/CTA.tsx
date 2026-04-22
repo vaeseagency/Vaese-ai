@@ -2,20 +2,26 @@
 
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
-import Button from '@/components/ui/Button'
 import AnimatedText from '@/components/ui/AnimatedText'
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'cal-inline': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & { calLink?: string },
+        HTMLElement
+      >
+    }
+  }
+}
 
 export default function CTA() {
   const ref = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  })
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const bgScale = useTransform(scrollYProgress, [0, 1], [1.1, 0.95])
 
   return (
-    <section id="contact" className="section-padding relative overflow-hidden" ref={ref} aria-label="Call to action">
+    <section id="contact" className="section-padding relative overflow-hidden" ref={ref} aria-label="Book a call">
       {/* Animated gradient background */}
       <motion.div
         className="pointer-events-none absolute inset-0 animated-gradient"
@@ -43,7 +49,7 @@ export default function CTA() {
         }}
       />
 
-      {/* Orbiting particle lines */}
+      {/* Orbiting rings */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
         {[...Array(3)].map((_, i) => (
           <motion.div
@@ -63,73 +69,75 @@ export default function CTA() {
         ))}
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-8 text-center">
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-xs font-body font-medium tracking-widest uppercase text-cyan mb-6"
-        >
-          Ready to start
-        </motion.p>
+      <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-8">
+        {/* Heading */}
+        <div className="text-center mb-12">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-xs font-body font-medium tracking-widest uppercase text-cyan mb-6"
+          >
+            Let&apos;s talk
+          </motion.p>
 
-        <AnimatedText
-          text="Ready to deploy intelligence?"
-          tag="h2"
-          mode="words"
-          className="font-display font-bold text-[clamp(2.5rem,6vw,5rem)] leading-tight gradient-text mb-6"
-        />
+          <AnimatedText
+            text="Book a Free Discovery Call"
+            tag="h2"
+            mode="words"
+            className="font-display font-bold text-[clamp(2rem,5vw,3.75rem)] leading-tight gradient-text mb-6"
+          />
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.25 }}
-          className="text-lg text-text-muted font-body max-w-xl mx-auto mb-12"
-        >
-          Book a strategy call. We&apos;ll map your highest-value automation opportunities and show
-          you exactly what we&apos;d build — no pitch, just a plan.
-        </motion.p>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="text-lg text-text-muted font-body max-w-xl mx-auto"
+          >
+            Discover how Vaese AI can automate and grow your business.
+            Pick a time that works for you.
+          </motion.p>
+        </div>
 
+        {/* Cal.com inline embed */}
         <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.96 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.4, type: 'spring', stiffness: 100 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          transition={{ duration: 0.7, delay: 0.35 }}
+          className="rounded-2xl overflow-hidden border border-border-subtle"
+          style={{ background: 'rgba(10,11,20,0.5)' }}
         >
-          <a href="https://calendar.app.google/omt8abRcd1YYqDcv5" target="_blank" rel="noopener noreferrer">
-            <Button variant="primary" size="lg" glow className="group min-w-[220px]">
-              Book a strategy call
-              <ArrowRight
-                size={16}
-                className="transition-transform duration-200 group-hover:translate-x-1"
-              />
-            </Button>
-          </a>
-          <a href="mailto:agency@vaese.info">
-            <Button variant="secondary" size="lg">
-              agency@vaese.info
-            </Button>
-          </a>
-          <a href="tel:+31687862661">
-            <Button variant="ghost" size="lg">
-              +31 6 87862661
-            </Button>
-          </a>
+          <cal-inline
+            calLink="vaese-ai-x3fvop/30min"
+            style={{ width: '100%', minHeight: '650px', border: 'none', display: 'block' }}
+          />
         </motion.div>
 
-        {/* Trust note */}
-        <motion.p
+        {/* Contact fallback */}
+        <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.65 }}
-          className="mt-10 text-sm text-text-muted font-body"
+          transition={{ duration: 0.8, delay: 0.55 }}
+          className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-text-muted font-body"
         >
-          No commitment. 30-minute call. Walk away with a roadmap.
-        </motion.p>
+          <span>Or reach us directly:</span>
+          <a
+            href="mailto:agency@vaese.info"
+            className="hover:text-white transition-colors duration-200"
+          >
+            agency@vaese.info
+          </a>
+          <a
+            href="tel:+31687862661"
+            className="hover:text-white transition-colors duration-200"
+          >
+            +31 6 87862661
+          </a>
+        </motion.div>
       </div>
     </section>
   )
