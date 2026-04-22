@@ -3,17 +3,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import AnimatedText from '@/components/ui/AnimatedText'
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'cal-inline': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & { calLink?: string },
-        HTMLElement
-      >
-    }
-  }
-}
+import CalInline from '@/components/ui/CalInline'
 
 export default function CTA() {
   const ref = useRef<HTMLElement>(null)
@@ -110,10 +100,7 @@ export default function CTA() {
           className="rounded-2xl overflow-hidden border border-border-subtle"
           style={{ background: 'rgba(10,11,20,0.5)' }}
         >
-          <cal-inline
-            calLink="vaese-ai-x3fvop/30min"
-            style={{ width: '100%', minHeight: '650px', border: 'none', display: 'block' }}
-          />
+          <CalInline calLink="vaese-ai-x3fvop/30min" />
         </motion.div>
 
         {/* Contact fallback */}

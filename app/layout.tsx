@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, Inter } from 'next/font/google'
-import Script from 'next/script'
 import CustomCursor from '@/components/layout/CustomCursor'
 import './globals.css'
 
@@ -111,7 +110,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <CustomCursor />
         {children}
-        <Script src="https://app.cal.com/embed/embed.js" strategy="lazyOnload" />
       </body>
     </html>
   )
