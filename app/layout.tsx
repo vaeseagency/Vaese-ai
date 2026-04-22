@@ -18,36 +18,96 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Vaese AI — AI Services for Business Growth',
+  metadataBase: new URL('https://vaese.ai'),
+  title: {
+    default: 'Vaese AI | AI Automatisering & Voice Agents voor Bedrijven',
+    template: '%s | Vaese AI',
+  },
   description:
-    'Vaese AI helps business owners grow and automate with AI — voice agents, websites, chatbots, automations, lead generation and sales categorization.',
-  keywords: ['AI agency', 'voice agents', 'chatbots', 'automatisering', 'AI diensten', 'Nederland'],
+    'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, website automatisering, lead generatie en sales categorisatie. Schaal je bedrijf met slimme AI-oplossingen op maat.',
+  keywords: [
+    'AI automatisering bedrijven',
+    'voice agent Nederland',
+    'AI chatbot bouwen',
+    'lead generatie AI',
+    'sales automatisering',
+    'AI diensten Nederland',
+    'chatbot voor bedrijven',
+    'AI agency Nederland',
+    'bedrijfsautomatisering AI',
+    'AI oplossingen MKB',
+    'voice agents',
+    'AI website',
+    'automatisering',
+    'Vaese AI',
+  ],
+  authors: [{ name: 'Vaese AI', url: 'https://vaese.ai' }],
+  creator: 'Vaese AI',
+  category: 'technology',
+  alternates: {
+    canonical: 'https://vaese.ai',
+    languages: {
+      'nl-NL': 'https://vaese.ai',
+      'en-US': 'https://vaese.ai',
+    },
+  },
   openGraph: {
-    title: 'Vaese AI — AI Services for Business Growth',
+    title: 'Vaese AI | AI Automatisering & Voice Agents voor Bedrijven',
     description:
-      'Vaese AI helps business owners grow and automate with AI — voice agents, websites, chatbots, automations, lead generation and sales categorization.',
+      'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, website automatisering, lead generatie en sales categorisatie.',
     type: 'website',
+    url: 'https://vaese.ai',
     siteName: 'Vaese AI',
-    images: [{ url: '/logo.png' }],
+    locale: 'nl_NL',
+    images: [{ url: '/logo.png', width: 1200, height: 630, alt: 'Vaese AI — AI Automatisering voor Bedrijven' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Vaese AI — AI Services for Business Growth',
+    title: 'Vaese AI | AI Automatisering & Voice Agents voor Bedrijven',
     description:
-      'Vaese AI helps business owners grow and automate with AI — voice agents, websites, chatbots, automations, lead generation and sales categorization.',
+      'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, automatisering, lead generatie en sales categorisatie.',
+    images: ['/logo.png'],
   },
   icons: {
     icon: '/logo.png',
     shortcut: '/logo.png',
     apple: '/logo.png',
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
+  },
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Vaese AI',
+  url: 'https://vaese.ai',
+  logo: 'https://vaese.ai/logo.png',
+  description:
+    'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, website automatisering, lead generatie en sales categorisatie.',
+  areaServed: 'NL',
+  serviceType: [
+    'Voice Agents',
+    'AI Chatbots',
+    'Website Automatisering',
+    'Lead Generatie',
+    'Sales Categorisatie',
+    'AI Automatisering',
+  ],
+  sameAs: ['https://vaese.ai'],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
+    <html lang="nl" className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body className="font-body bg-bg text-white antialiased selection:bg-primary/30 selection:text-white">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <CustomCursor />
         {children}
       </body>
