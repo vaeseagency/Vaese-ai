@@ -59,19 +59,19 @@ export const metadata: Metadata = {
     url: 'https://vaese.ai',
     siteName: 'Vaese AI',
     locale: 'nl_NL',
-    images: [{ url: '/logo.png', width: 720, height: 240, alt: 'Vaese AI — AI Automatisering voor Bedrijven' }],
+    images: [{ url: '/logo.svg', width: 1200, height: 630, alt: 'Vaese AI — AI Automatisering voor Bedrijven' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Vaese AI | AI Automatisering & Voice Agents voor Bedrijven',
     description:
       'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, automatisering, lead generatie en sales categorisatie.',
-    images: ['/logo.png'],
+    images: ['/logo.svg'],
   },
   icons: {
-    icon: '/logo.png',
-    shortcut: '/logo.png',
-    apple: '/logo.png',
+    icon: '/logo.svg',
+    shortcut: '/logo.svg',
+    apple: '/logo.svg',
   },
   robots: {
     index: true,
@@ -85,7 +85,7 @@ const jsonLd = {
   '@type': 'Organization',
   name: 'Vaese AI',
   url: 'https://vaese.ai',
-  logo: 'https://vaese.ai/logo.png',
+  logo: 'https://vaese.ai/logo.svg',
   description:
     'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, website automatisering, lead generatie en sales categorisatie.',
   areaServed: 'NL',

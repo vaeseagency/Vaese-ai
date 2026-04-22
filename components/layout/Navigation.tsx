@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
-import Image from 'next/image'
 import Button from '@/components/ui/Button'
 
 const navLinks = [
@@ -34,14 +33,10 @@ export default function Navigation() {
       <nav className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center" aria-label="Vaese AI home">
-          <Image
-            src="/logo.png"
-            alt="Vaese AI"
-            height={240}
-            width={720}
-            className="h-[240px] w-auto object-contain brightness-0 invert"
-            priority
-          />
+          <span className="font-display font-semibold text-[2.2rem] leading-none tracking-tight select-none">
+            <span className="gradient-text">VAESE</span>
+            <span className="text-primary ml-[0.2em]">AI</span>
+          </span>
         </Link>
 
         {/* Desktop nav links */}
