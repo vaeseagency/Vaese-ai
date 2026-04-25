@@ -23,95 +23,112 @@ export default function Navigation() {
 
   return (
     <motion.header
-      className="fixed top-0 inset-x-0 z-50 transition-all duration-500"
+      className="fixed top-0 inset-x-0 z-50"
       style={{
-        backgroundColor: scrolled ? 'rgba(5,5,5,0.92)' : 'transparent',
+        backgroundColor: scrolled ? 'rgba(10,10,10,0.94)' : 'transparent',
         backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
         borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : '1px solid transparent',
+        transition: 'background-color 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease',
       }}
     >
       <nav className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2" aria-label="Vaese AI home">
-          <span className="font-display font-semibold text-[1.65rem] leading-none tracking-[0.06em] text-white select-none">
-            VAESE
-          </span>
-          <span
-            className="font-body font-medium text-[0.65rem] tracking-[0.3em] uppercase select-none self-end mb-[3px]"
-            style={{ color: '#0066FF' }}
-          >
-            AI
-          </span>
-        </Link>
+        {/* Logo — slight spring bounce on mount */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Link href="/" className="flex items-center gap-1.5" aria-label="Vaese AI home">
+            <span className="font-display font-bold text-2xl tracking-tight text-white select-none">
+              VAESE
+            </span>
+            <span className="font-body font-semibold text-[0.6rem] tracking-[0.3em] uppercase select-none self-end mb-[3px]" style={{ color: '#FF2020' }}>
+              AI
+            </span>
+          </Link>
+        </motion.div>
 
-        {/* Desktop nav links */}
-        <ul className="hidden md:flex items-center gap-9" role="list">
-          {navLinks.map((link) => (
-            <li key={link.label}>
+        {/* Desktop links */}
+        <motion.ul
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="hidden md:flex items-center gap-9"
+          role="list"
+        >
+          {navLinks.map((link, i) => (
+            <motion.li
+              key={link.label}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
               <Link
                 href={link.href}
-                className="nav-link relative font-body text-xs font-medium tracking-widest uppercase text-text-muted hover:text-white transition-colors duration-200"
+                className="nav-link font-body text-xs font-medium tracking-widest uppercase text-text-muted-dark hover:text-white transition-colors duration-200"
               >
                 {link.label}
               </Link>
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
 
         {/* CTA */}
-        <div className="hidden md:block">
-          <Button variant="primary" size="sm" href="#contact">
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="hidden md:block"
+        >
+          <Button variant="red" size="sm" href="#contact" magnetic>
             Book a call
           </Button>
-        </div>
+        </motion.div>
 
-        {/* Mobile toggle */}
+        {/* Mobile hamburger */}
         <button
-          className="md:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-[5px]"
+          className="md:hidden relative w-9 h-9 flex flex-col items-center justify-center gap-[5px]"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
         >
-          <motion.span
-            className="block w-5 h-px bg-white"
+          <motion.span className="block w-5 h-px bg-white"
             animate={mobileOpen ? { rotate: 45, y: 3 } : { rotate: 0, y: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
           />
-          <motion.span
-            className="block w-5 h-px bg-white"
+          <motion.span className="block w-5 h-px bg-white"
             animate={mobileOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.18 }}
           />
-          <motion.span
-            className="block w-5 h-px bg-white"
+          <motion.span className="block w-5 h-px bg-white"
             animate={mobileOpen ? { rotate: -45, y: -3 } : { rotate: 0, y: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
           />
         </button>
       </nav>
 
-      {/* Mobile menu — geometric reveal */}
+      {/* Mobile menu — geometric clip reveal */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ clipPath: 'inset(0 0 100% 0)', opacity: 0 }}
-            animate={{ clipPath: 'inset(0 0 0% 0)', opacity: 1 }}
-            exit={{ clipPath: 'inset(0 0 100% 0)', opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="md:hidden border-t border-border-subtle"
-            style={{ background: 'rgba(5,5,5,0.97)', backdropFilter: 'blur(20px)' }}
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+            className="md:hidden border-t border-border-light"
+            style={{ background: 'rgba(10,10,10,0.98)', backdropFilter: 'blur(24px)' }}
           >
-            <div className="px-6 py-8 flex flex-col gap-0">
+            <div className="px-6 py-8 flex flex-col">
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.label}
-                  initial={{ opacity: 0, x: -16 }}
+                  initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.06 + 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: i * 0.07 + 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <Link
                     href={link.href}
-                    className="block py-4 border-b border-border-subtle font-body text-sm font-medium tracking-widest uppercase text-text-muted hover:text-white transition-colors"
+                    className="block py-4 border-b border-border-light font-body text-sm font-medium tracking-widest uppercase text-text-muted-dark hover:text-white transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
                     {link.label}
@@ -121,16 +138,10 @@ export default function Navigation() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.35, duration: 0.4 }}
+                transition={{ delay: 0.38, duration: 0.4 }}
                 className="mt-6"
               >
-                <Button
-                  variant="primary"
-                  size="sm"
-                  href="#contact"
-                  className="w-full"
-                  onClick={() => setMobileOpen(false)}
-                >
+                <Button variant="red" size="md" href="#contact" className="w-full" onClick={() => setMobileOpen(false)}>
                   Book a call
                 </Button>
               </motion.div>

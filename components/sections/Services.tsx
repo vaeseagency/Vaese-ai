@@ -8,6 +8,7 @@ const services = [
   {
     icon: Globe,
     tag: 'Free — No catch',
+    tagColor: '#0055FF',
     title: 'Your Website, Built Free.',
     tagline: 'A modern, high-converting website for your business — designed and built by us, at zero cost.',
     description:
@@ -20,13 +21,15 @@ const services = [
       'Delivered within 2 weeks of kickoff',
       'No hidden fees, no ongoing contracts required',
     ],
+    accentColor: '#0055FF',
+    checkColor: '#0055FF',
     cta: 'Get your free website',
     ctaHref: '#contact',
-    index: 0,
   },
   {
     icon: Mic,
     tag: 'Always on — 24/7',
+    tagColor: '#00BB44',
     title: 'AI Voice Agent.',
     tagline: 'A voice AI that answers calls, qualifies leads, and books appointments — sounding indistinguishable from your best team member.',
     description:
@@ -39,101 +42,120 @@ const services = [
       'Multilingual — deploy in any language',
       'Live in 7–14 days, fully customised to your business',
     ],
+    accentColor: '#00BB44',
+    checkColor: '#00BB44',
     cta: 'Book a strategy call',
     ctaHref: '#contact',
-    index: 1,
   },
 ]
 
-function ServiceCard({ service }: { service: (typeof services)[0] }) {
+function ServiceCard({ service, index }: { service: (typeof services)[0]; index: number }) {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-60px 0px' })
+  const inView = useInView(ref, { once: true, margin: '-50px 0px' })
 
   return (
+    // 3D UNFOLD — card folds out from top (rotateX from -90 to 0)
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40, rotateX: 8 }}
-      animate={inView ? { opacity: 1, y: 0, rotateX: 0 } : { opacity: 0, y: 40, rotateX: 8 }}
-      transition={{ duration: 0.8, delay: service.index * 0.18, ease: [0.22, 1, 0.36, 1] }}
-      style={{ perspective: '1000px' }}
+      initial={{ opacity: 0, rotateX: -75, y: -30 }}
+      animate={inView ? { opacity: 1, rotateX: 0, y: 0 } : {}}
+      transition={{
+        duration: 1.0,
+        delay: index * 0.2,
+        type: 'spring',
+        stiffness: 75,
+        damping: 14,
+      }}
+      style={{ perspective: '1400px', transformOrigin: 'top center' }}
       className="h-full"
     >
-      <div className="card-light h-full flex flex-col p-8 lg:p-10">
+      <div
+        className="card-white h-full flex flex-col p-8 lg:p-10 relative overflow-hidden"
+      >
+        {/* Accent top bar */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[3px]"
+          style={{ background: service.accentColor }}
+          aria-hidden
+        />
+
         {/* Tag */}
-        <div className="flex items-center gap-2.5 mb-8">
+        <motion.div
+          initial={{ opacity: 0, x: -14 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ delay: index * 0.2 + 0.45, duration: 0.5 }}
+          className="flex items-center gap-2 mb-7"
+        >
+          <motion.span
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ background: service.tagColor }}
+            animate={inView ? { opacity: [1, 0.3, 1] } : {}}
+            transition={{ duration: 2, repeat: Infinity }}
+            aria-hidden
+          />
           <span
-            className="inline-flex items-center gap-1.5 px-3 py-1 text-[0.65rem] font-body font-medium tracking-widest uppercase border"
-            style={{
-              color: '#0066FF',
-              borderColor: 'rgba(0,102,255,0.25)',
-              background: 'rgba(0,102,255,0.05)',
-            }}
+            className="eyebrow"
+            style={{ color: service.tagColor }}
           >
-            <motion.span
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ background: '#0066FF' }}
-              animate={inView ? { opacity: [1, 0.3, 1] } : {}}
-              transition={{ duration: 2, repeat: Infinity, delay: service.index * 0.5 }}
-              aria-hidden
-            />
             {service.tag}
           </span>
-        </div>
+        </motion.div>
 
         {/* Icon + Title */}
-        <div className="flex items-start gap-5 mb-7">
-          <div
+        <div className="flex items-start gap-5 mb-6">
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0, rotate: -10 }}
+            animate={inView ? { scale: 1, opacity: 1, rotate: 0 } : {}}
+            transition={{ delay: index * 0.2 + 0.3, type: 'spring', stiffness: 300, damping: 20 }}
             className="w-12 h-12 flex items-center justify-center flex-shrink-0 border"
-            style={{
-              background: 'rgba(0,102,255,0.06)',
-              borderColor: 'rgba(0,102,255,0.18)',
-            }}
+            style={{ borderColor: `${service.accentColor}30`, background: `${service.accentColor}08` }}
           >
-            <service.icon size={22} style={{ color: '#0066FF' }} strokeWidth={1.4} />
-          </div>
+            <service.icon size={22} style={{ color: service.accentColor }} strokeWidth={1.6} />
+          </motion.div>
           <div className="pt-1">
-            <h3 className="font-display font-medium text-[clamp(1.6rem,2.8vw,2.2rem)] leading-tight text-bg">
+            <h3 className="font-display font-bold text-[clamp(1.5rem,2.5vw,2rem)] leading-tight text-text-dark tracking-tight">
               {service.title}
             </h3>
-            <p className="mt-2 text-sm font-body leading-relaxed text-text-muted-light">
+            <p className="mt-1.5 text-sm font-body leading-relaxed text-text-muted">
               {service.tagline}
             </p>
           </div>
         </div>
 
-        {/* Description */}
-        <p className="font-body text-sm text-text-muted-light leading-[1.8] mb-7">
+        {/* Description — blur reveal */}
+        <motion.p
+          initial={{ filter: 'blur(8px)', opacity: 0 }}
+          animate={inView ? { filter: 'blur(0px)', opacity: 1 } : {}}
+          transition={{ delay: index * 0.2 + 0.5, duration: 0.75 }}
+          className="font-body text-sm text-text-muted leading-[1.8] mb-7"
+        >
           {service.description}
-        </p>
+        </motion.p>
 
-        {/* Divider */}
-        <div
-          className="w-full h-px mb-7"
-          style={{ background: 'rgba(0,102,255,0.15)' }}
-          aria-hidden
-        />
+        <div className="w-full h-px mb-7" style={{ background: `${service.accentColor}18` }} aria-hidden />
 
-        {/* Bullets */}
+        {/* Bullets — stagger from left */}
         <ul className="space-y-3 mb-9 flex-1">
-          {service.bullets.map((bullet) => (
-            <li key={bullet} className="flex items-start gap-3">
-              <Check
-                size={13}
-                className="flex-shrink-0 mt-[3px]"
-                style={{ color: '#0066FF' }}
-                strokeWidth={2.5}
-              />
-              <span className="font-body text-sm text-text-muted-light leading-relaxed">{bullet}</span>
-            </li>
+          {service.bullets.map((bullet, bi) => (
+            <motion.li
+              key={bullet}
+              initial={{ opacity: 0, x: -14 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ delay: index * 0.2 + 0.55 + bi * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="flex items-start gap-3"
+            >
+              <Check size={13} className="flex-shrink-0 mt-[3px]" style={{ color: service.checkColor }} strokeWidth={2.5} />
+              <span className="font-body text-sm text-text-muted leading-relaxed">{bullet}</span>
+            </motion.li>
           ))}
         </ul>
 
-        {/* CTA */}
+        {/* CTA arrow link */}
         <motion.a
           href={service.ctaHref}
-          className="group inline-flex items-center gap-2.5 mt-auto font-body text-sm font-medium"
-          style={{ color: '#0066FF' }}
-          whileHover={{ x: 3 }}
+          className="group inline-flex items-center gap-2.5 mt-auto font-display font-semibold text-sm"
+          style={{ color: service.accentColor }}
+          whileHover={{ x: 5 }}
           transition={{ type: 'spring', stiffness: 400, damping: 20 }}
         >
           {service.cta}
@@ -146,57 +168,52 @@ function ServiceCard({ service }: { service: (typeof services)[0] }) {
 
 export default function Services() {
   return (
-    <section id="services" className="section-padding bg-bg-section">
-      {/* Precise grid background on light section */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        aria-hidden
-        style={{
-          backgroundImage: 'linear-gradient(rgba(5,5,5,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(5,5,5,0.05) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-        }}
-      />
+    <section id="services" className="section-padding bg-bg-white relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 grid-white" aria-hidden />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
-        <div className="max-w-2xl mb-16">
+        <div className="max-w-2xl mb-18">
           <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             className="eyebrow mb-5"
+            style={{ color: '#0055FF' }}
           >
             What we offer
           </motion.p>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display font-light text-[clamp(2.4rem,5vw,4rem)] leading-[1.05] tracking-[-0.01em] text-bg"
-          >
-            Two offers.{' '}
-            <span className="italic" style={{ color: '#0066FF' }}>Both exceptional.</span>
-          </motion.h2>
+          {/* Title — clip-path wipe from bottom */}
+          <div className="overflow-hidden">
+            <motion.h2
+              initial={{ y: '100%' }}
+              whileInView={{ y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display font-bold text-[clamp(2.2rem,5vw,3.8rem)] leading-tight tracking-tight text-text-dark"
+            >
+              Two offers.{' '}
+              <span style={{ color: '#0055FF' }}>Both exceptional.</span>
+            </motion.h2>
+          </div>
 
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, filter: 'blur(6px)' }}
+            whileInView={{ opacity: 1, filter: 'blur(0px)' }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.25 }}
-            className="mt-6 text-sm text-text-muted-light font-body leading-[1.8] max-w-md"
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="mt-5 text-sm text-text-muted font-body leading-[1.8] max-w-md"
           >
             We keep our focus tight so we can deliver at the highest level. A free website to
             start the relationship — and an AI voice agent to transform how you handle every call.
           </motion.p>
         </div>
 
-        {/* Two-column cards */}
-        <div className="grid md:grid-cols-2 gap-5">
-          {services.map((service) => (
-            <ServiceCard key={service.title} service={service} />
+        <div className="grid md:grid-cols-2 gap-6" style={{ perspective: '1600px' }}>
+          {services.map((service, i) => (
+            <ServiceCard key={service.title} service={service} index={i} />
           ))}
         </div>
       </div>

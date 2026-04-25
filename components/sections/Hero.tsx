@@ -1,8 +1,8 @@
 'use client'
 
-import { useRef, useEffect, useCallback } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import dynamic from 'next/dynamic'
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
+import { motion, useScroll, useTransform, useSpring, useVelocity } from 'framer-motion'
 import { ArrowRight, ChevronDown } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
@@ -12,8 +12,52 @@ const HeroScene = dynamic(
   { ssr: false }
 )
 
-// Living geometric grid background
-function GeometricGrid() {
+const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&'
+
+function useScramble(text: string, active: boolean, delayMs = 0, speed = 42) {
+  const [output, setOutput] = useState(() => text.replace(/[^ ]/g, () => SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]))
+  const rafRef = useRef<number>(0)
+  const reducedMotion = useReducedMotion()
+
+  useEffect(() => {
+    if (!active || reducedMotion) { setOutput(text); return }
+
+    const start = performance.now() + delayMs
+    const SETTLE = speed      // ms per character settle
+    let lastCycle = 0
+
+    const tick = (now: number) => {
+      if (now < start) { rafRef.current = requestAnimationFrame(tick); return }
+      const elapsed = now - start
+      const settled = Math.floor(elapsed / SETTLE)
+
+      if (now - lastCycle > 36) {
+        lastCycle = now
+        const result = text.split('').map((char, i) => {
+          if (char === ' ') return ' '
+          if (char === ',') return i < settled ? ',' : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+          if (char === '.') return i < settled ? '.' : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+          return i < settled ? char : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)].toLowerCase()
+        }).join('')
+        setOutput(result)
+      }
+
+      if (settled < text.length) {
+        rafRef.current = requestAnimationFrame(tick)
+      } else {
+        setOutput(text)
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [active, text, delayMs, speed, reducedMotion])
+
+  return output
+}
+
+// Ambient geometric grid on the dark hero background
+function HeroGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouseRef = useRef({ x: -9999, y: -9999 })
   const frameRef = useRef<number>(0)
@@ -24,91 +68,58 @@ function GeometricGrid() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const W = canvas.width
-    const H = canvas.height
+    const W = canvas.width, H = canvas.height
     ctx.clearRect(0, 0, W, H)
 
-    const CELL = 72
+    const CELL = 80
     const cols = Math.ceil(W / CELL) + 2
     const rows = Math.ceil(H / CELL) + 2
     const mx = mouseRef.current.x
     const my = mouseRef.current.y
-    const RADIUS = 220
-    const t = Date.now() * 0.0003
+    const RADIUS = 200
+    const t = Date.now() * 0.00025
 
-    // Draw grid lines
-    ctx.strokeStyle = 'rgba(255,255,255,0.038)'
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)'
     ctx.lineWidth = 0.5
-
     for (let c = 0; c < cols; c++) {
-      const x = c * CELL
-      ctx.beginPath()
-      ctx.moveTo(x, 0)
-      ctx.lineTo(x, H)
-      ctx.stroke()
+      ctx.beginPath(); ctx.moveTo(c * CELL, 0); ctx.lineTo(c * CELL, H); ctx.stroke()
     }
     for (let r = 0; r < rows; r++) {
-      const y = r * CELL
-      ctx.beginPath()
-      ctx.moveTo(0, y)
-      ctx.lineTo(W, y)
-      ctx.stroke()
+      ctx.beginPath(); ctx.moveTo(0, r * CELL); ctx.lineTo(W, r * CELL); ctx.stroke()
     }
 
-    // Draw intersection nodes
     for (let c = 0; c < cols; c++) {
       for (let r = 0; r < rows; r++) {
-        const baseX = c * CELL
-        const baseY = r * CELL
-
-        const dx = baseX - mx
-        const dy = baseY - my
+        if ((c + r) % 2 !== 0) continue
+        const bx = c * CELL, by = r * CELL
+        const dx = bx - mx, dy = by - my
         const dist = Math.sqrt(dx * dx + dy * dy)
-        const influence = dist < RADIUS ? 1 - dist / RADIUS : 0
+        const inf = dist < RADIUS ? 1 - dist / RADIUS : 0
+        const nx = bx + inf * (dx / (dist + 1)) * -12
+        const ny = by + inf * (dy / (dist + 1)) * -12
+        const phase = (c * 0.5 + r * 0.4 + t * 3) % (Math.PI * 2)
+        const pulse = (Math.sin(phase) + 1) * 0.5
+        const alpha = inf > 0.3 ? 0.1 + inf * 0.7 : 0.05 + pulse * 0.07
+        const radius = inf > 0.3 ? 1.5 + inf * 3 : 1 + pulse * 0.5
 
-        // Tiny displacement from mouse
-        const ox = influence * (dx / (dist + 1)) * -14
-        const oy = influence * (dy / (dist + 1)) * -14
-
-        const nx = baseX + ox
-        const ny = baseY + oy
-
-        // Pulsing nodes at every 3rd intersection
-        if ((c + r) % 3 === 0) {
-          const phase = (c * 0.4 + r * 0.3 + t * 2.5) % (Math.PI * 2)
-          const pulse = (Math.sin(phase) + 1) * 0.5
-          const alpha = influence > 0
-            ? 0.15 + influence * 0.7 + pulse * 0.2
-            : 0.06 + pulse * 0.08
-          const radius = influence > 0 ? 1.8 + influence * 3 : 1.2 + pulse * 0.6
-
-          if (influence > 0.2) {
-            // Electric blue glow near cursor
-            ctx.beginPath()
-            ctx.arc(nx, ny, radius * 3, 0, Math.PI * 2)
-            ctx.fillStyle = `rgba(0,102,255,${influence * 0.12})`
-            ctx.fill()
-
-            ctx.beginPath()
-            ctx.arc(nx, ny, radius, 0, Math.PI * 2)
-            ctx.fillStyle = `rgba(0,102,255,${alpha})`
-            ctx.fill()
-          } else {
-            ctx.beginPath()
-            ctx.arc(nx, ny, radius, 0, Math.PI * 2)
-            ctx.fillStyle = `rgba(255,255,255,${alpha})`
-            ctx.fill()
-          }
+        if (inf > 0.3) {
+          ctx.beginPath()
+          ctx.arc(nx, ny, radius * 2.5, 0, Math.PI * 2)
+          ctx.fillStyle = `rgba(255,32,32,${inf * 0.15})`
+          ctx.fill()
         }
+        ctx.beginPath()
+        ctx.arc(nx, ny, radius, 0, Math.PI * 2)
+        ctx.fillStyle = inf > 0.3 ? `rgba(255,32,32,${alpha})` : `rgba(255,255,255,${alpha})`
+        ctx.fill()
       }
     }
 
-    // Cursor spotlight
     if (mx > 0) {
-      const gradient = ctx.createRadialGradient(mx, my, 0, mx, my, RADIUS)
-      gradient.addColorStop(0, 'rgba(0,102,255,0.05)')
-      gradient.addColorStop(1, 'rgba(0,102,255,0)')
-      ctx.fillStyle = gradient
+      const g = ctx.createRadialGradient(mx, my, 0, mx, my, RADIUS)
+      g.addColorStop(0, 'rgba(255,32,32,0.04)')
+      g.addColorStop(1, 'rgba(255,32,32,0)')
+      ctx.fillStyle = g
       ctx.fillRect(0, 0, W, H)
     }
 
@@ -118,91 +129,42 @@ function GeometricGrid() {
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth
-      canvas.height = canvas.offsetHeight
-    }
+    const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight }
     resize()
-
-    const onMouseMove = (e: MouseEvent) => {
+    const onMouse = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect()
       mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top }
     }
-
-    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mousemove', onMouse)
     frameRef.current = requestAnimationFrame(draw)
-
     const ro = new ResizeObserver(resize)
     ro.observe(canvas)
-
-    return () => {
-      cancelAnimationFrame(frameRef.current)
-      window.removeEventListener('mousemove', onMouseMove)
-      ro.disconnect()
-    }
+    return () => { cancelAnimationFrame(frameRef.current); window.removeEventListener('mousemove', onMouse); ro.disconnect() }
   }, [draw])
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
-      style={{ opacity: 0.9 }}
-      aria-hidden
-    />
-  )
-}
-
-// Character-by-character reveal
-function CharReveal({ text, delay = 0, className }: { text: string; delay?: number; className?: string }) {
-  const chars = text.split('')
-  return (
-    <span className={className} aria-label={text}>
-      {chars.map((char, i) => (
-        <motion.span
-          key={i}
-          initial={{ opacity: 0, y: 24, rotateX: -40 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          transition={{
-            duration: 0.55,
-            delay: delay + i * 0.028,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          style={{ display: char === ' ' ? 'inline' : 'inline-block' }}
-        >
-          {char === ' ' ? ' ' : char}
-        </motion.span>
-      ))}
-    </span>
-  )
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" aria-hidden />
 }
 
 export default function Hero() {
   const reducedMotion = useReducedMotion()
   const containerRef = useRef<HTMLDivElement>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
+
   const { scrollY } = useScroll()
-  const parallaxY = useTransform(scrollY, [0, 600], [0, -50])
-  const opacity = useTransform(scrollY, [0, 350], [1, 0])
+  const scrollVelocity = useVelocity(scrollY)
 
-  // Magnetic CTA effect
-  const magnetX = useMotionValue(0)
-  const magnetY = useMotionValue(0)
-  const springX = useSpring(magnetX, { stiffness: 150, damping: 18 })
-  const springY = useSpring(magnetY, { stiffness: 150, damping: 18 })
+  // Velocity-based tilt — scroll fast = content tilts back
+  const rawTilt = useTransform(scrollVelocity, [-2000, 0, 2000], [2, 0, -2])
+  const tilt = useSpring(rawTilt, { stiffness: 80, damping: 30 })
 
-  const handleMagnet = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (reducedMotion) return
-    const rect = e.currentTarget.getBoundingClientRect()
-    const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
-    magnetX.set((e.clientX - cx) * 0.35)
-    magnetY.set((e.clientY - cy) * 0.35)
-  }
+  const parallaxY = useTransform(scrollY, [0, 600], [0, -60])
+  const fadeOut = useTransform(scrollY, [0, 380], [1, 0])
 
-  const resetMagnet = () => {
-    magnetX.set(0)
-    magnetY.set(0)
-  }
+  // Scramble triggers
+  const line1 = useScramble('Intelligence,', mounted, 200, 46)
+  const line2 = useScramble('deployed.', mounted, 900, 55)
 
   return (
     <section
@@ -210,189 +172,165 @@ export default function Hero() {
       aria-label="Hero"
       ref={containerRef}
     >
-      {/* Living geometric grid background */}
-      {!reducedMotion && <GeometricGrid />}
+      {/* Living grid background */}
+      {!reducedMotion && <HeroGrid />}
+      <div className="pointer-events-none absolute inset-0 grid-dark" aria-hidden />
 
-      {/* Static grid fallback / base layer */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0"
-        aria-hidden
-        style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)',
-          backgroundSize: '72px 72px',
-        }}
-      />
-
-      {/* Vignette */}
+      {/* Radial vignette */}
       <div
         className="pointer-events-none absolute inset-0 z-[1]"
         aria-hidden
-        style={{
-          background: 'radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(5,5,5,0.7) 100%)',
-        }}
-      />
-
-      {/* Electric blue ambient — top left */}
-      <div
-        className="pointer-events-none absolute z-[1]"
-        aria-hidden
-        style={{
-          width: '40vw',
-          height: '40vw',
-          top: '-10%',
-          left: '-5%',
-          background: 'radial-gradient(circle, rgba(0,102,255,0.07) 0%, transparent 70%)',
-        }}
+        style={{ background: 'radial-gradient(ellipse 95% 90% at 50% 50%, transparent 35%, rgba(10,10,10,0.75) 100%)' }}
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-16 w-full">
         <div className="grid lg:grid-cols-[1fr_0.85fr] gap-8 lg:gap-0 items-center min-h-[calc(100vh-7rem)]">
 
-          {/* Left: text */}
+          {/* Left: text — velocity tilt applied here */}
           <motion.div
-            style={reducedMotion ? {} : { y: parallaxY, opacity }}
+            style={reducedMotion ? {} : { y: parallaxY, opacity: fadeOut, rotateX: tilt }}
             className="flex flex-col justify-center"
+            transformTemplate={({ rotateX, y }) =>
+              `perspective(1200px) rotateX(${rotateX}) translateY(${y})`
+            }
           >
-            {/* Eyebrow */}
+            {/* Eyebrow — slides in from left */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="flex items-center gap-3 mb-10"
             >
-              <span className="block w-8 h-px" style={{ background: '#0066FF' }} aria-hidden />
-              <span className="font-body text-[0.65rem] font-medium tracking-[0.22em] uppercase text-text-muted">
-                AI Agency — Building the autonomous layer
-              </span>
               <motion.span
                 className="w-1.5 h-1.5 rounded-full"
-                style={{ background: '#0066FF' }}
-                animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ background: '#FF2020' }}
+                animate={{ opacity: [1, 0.2, 1] }}
+                transition={{ duration: 1.8, repeat: Infinity }}
                 aria-hidden
               />
+              <span className="eyebrow text-text-muted-dark">
+                AI Agency — Building the autonomous layer
+              </span>
             </motion.div>
 
-            {/* Main headline — character by character */}
-            <div className="overflow-visible">
-              <h1 className="font-display font-light text-[clamp(3.8rem,8vw,7.5rem)] leading-[0.92] tracking-[-0.02em] text-white block">
-                {reducedMotion ? (
-                  'Intelligence,'
-                ) : (
-                  <CharReveal text="Intelligence," delay={0.1} />
-                )}
-              </h1>
-              <h1 className="font-display font-light italic text-[clamp(3.8rem,8vw,7.5rem)] leading-[0.92] tracking-[-0.02em] block mt-1"
-                style={{ color: '#0066FF' }}>
-                {reducedMotion ? (
-                  'deployed.'
-                ) : (
-                  <CharReveal text="deployed." delay={0.28} />
-                )}
-              </h1>
+            {/* Scramble headline — line 1 */}
+            <div className="overflow-hidden">
+              <motion.h1
+                initial={{ y: '108%' }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.85, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+                className="font-display font-bold text-[clamp(3.6rem,8.5vw,7.8rem)] leading-[0.9] tracking-[-0.03em] text-white scramble-text block"
+              >
+                {line1}
+              </motion.h1>
             </div>
 
-            {/* Horizontal accent line */}
+            {/* Scramble headline — line 2 in RED */}
+            <div className="overflow-hidden">
+              <motion.h1
+                initial={{ y: '108%' }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.85, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                className="font-display font-bold text-[clamp(3.6rem,8.5vw,7.8rem)] leading-[0.9] tracking-[-0.03em] scramble-text block"
+                style={{ color: '#FF2020' }}
+              >
+                {line2}
+              </motion.h1>
+            </div>
+
+            {/* Horizontal divider — draws in */}
             <motion.div
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
-              transition={{ duration: 1.1, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-8 h-px origin-left"
-              style={{ background: 'rgba(255,255,255,0.1)', maxWidth: '480px' }}
+              transition={{ duration: 1, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-9 mb-9 h-px max-w-sm origin-left"
+              style={{ background: 'rgba(255,255,255,0.12)' }}
               aria-hidden
             />
 
-            {/* Sub-headline */}
+            {/* Sub-headline — blur reveal */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-8 text-base text-text-muted font-body leading-[1.75] max-w-md"
+              initial={{ filter: 'blur(10px)', opacity: 0, y: 18 }}
+              animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+              transition={{ duration: 0.85, delay: 0.78, ease: [0.22, 1, 0.36, 1] }}
+              className="font-body text-base text-text-muted-dark leading-[1.75] max-w-md"
             >
               We build AI systems that run your workflows, answer your calls, and close your deals —
               autonomously, around the clock.
             </motion.p>
 
-            {/* CTAs */}
+            {/* CTAs — staggered spring entrance */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.88, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.05, duration: 0.5 }}
               className="mt-10 flex flex-wrap gap-4"
             >
-              {/* Magnetic primary CTA */}
-              <motion.div
-                onMouseMove={handleMagnet}
-                onMouseLeave={resetMagnet}
-                style={{ x: springX, y: springY }}
-              >
-                <Button variant="primary" size="lg" glow href="#contact" className="group">
-                  Book a strategy call
-                  <ArrowRight
-                    size={15}
-                    className="transition-transform duration-200 group-hover:translate-x-1"
-                  />
-                </Button>
-              </motion.div>
-              <Button variant="secondary" size="lg" href="#services">
+              <Button variant="red" size="lg" magnetic href="#contact" className="group">
+                Book a strategy call
+                <motion.span
+                  className="inline-block"
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <ArrowRight size={15} />
+                </motion.span>
+              </Button>
+              <Button variant="outline-light" size="lg" href="#services">
                 See what we build
               </Button>
             </motion.div>
 
             {/* Social proof */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 1.05, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 1.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="mt-10 flex items-center gap-4"
             >
               <div className="flex -space-x-2">
-                {[...Array(4)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-7 h-7 rounded-full border border-white/10"
-                    style={{ background: `hsl(${215 + i * 20}, 70%, 35%)` }}
-                  />
+                {['215, 70%, 32%', '235, 65%, 38%', '195, 80%, 35%', '255, 60%, 40%'].map((hsl, i) => (
+                  <div key={i} className="w-7 h-7 rounded-full border border-white/10"
+                    style={{ background: `hsl(${hsl})` }} />
                 ))}
               </div>
-              <p className="text-xs text-text-muted font-body">
-                Trusted by{' '}
-                <span className="text-white font-medium">20+ forward-thinking teams</span>
+              <p className="font-body text-xs text-text-muted-dark">
+                Trusted by <span className="text-white font-medium">20+ forward-thinking teams</span>
               </p>
             </motion.div>
           </motion.div>
 
-          {/* Right: Three.js scene */}
+          {/* Right: 3D Scene */}
           <motion.div
-            initial={reducedMotion ? false : { opacity: 0, scale: 0.94 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.3, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            initial={reducedMotion ? false : { opacity: 0, scale: 0.88, rotateY: -8 }}
+            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+            transition={{ duration: 1.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            style={{ perspective: '1200px' }}
             className="relative h-[440px] lg:h-[640px] flex items-center justify-center"
           >
-            <div className="absolute inset-0" aria-hidden>
-              <HeroScene />
-            </div>
+            <div className="absolute inset-0" aria-hidden><HeroScene /></div>
 
-            {/* Floating stat — top right */}
+            {/* Floating stats — magnetic effect built in via animation */}
             <motion.div
-              animate={reducedMotion ? {} : { y: [-5, 5, -5] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-[12%] right-[4%] z-10 border border-border-subtle"
-              style={{ background: 'rgba(5,5,5,0.8)', backdropFilter: 'blur(12px)', padding: '12px 16px' }}
+              animate={reducedMotion ? {} : { y: [-6, 6, -6] }}
+              transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-[12%] right-[4%] z-10 p-4 border border-white/08"
+              style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(12px)' }}
             >
-              <p className="text-[0.6rem] font-body uppercase tracking-[0.18em] text-text-muted">Avg. deployment</p>
-              <p className="text-lg font-display font-medium text-white mt-0.5">14 days</p>
+              <p className="eyebrow text-text-muted-dark mb-1">Avg. deployment</p>
+              <p className="font-display font-bold text-xl text-white">14 days</p>
+              <div className="mt-1.5 h-0.5 w-full" style={{ background: '#FF2020' }} aria-hidden />
             </motion.div>
 
-            {/* Floating stat — bottom left */}
             <motion.div
-              animate={reducedMotion ? {} : { y: [5, -5, 5] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
-              className="absolute bottom-[18%] left-[2%] z-10 border border-border-subtle"
-              style={{ background: 'rgba(5,5,5,0.8)', backdropFilter: 'blur(12px)', padding: '12px 16px' }}
+              animate={reducedMotion ? {} : { y: [6, -6, 6] }}
+              transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+              className="absolute bottom-[18%] left-[2%] z-10 p-4 border border-white/08"
+              style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(12px)' }}
             >
-              <p className="text-[0.6rem] font-body uppercase tracking-[0.18em] text-text-muted">Workflow speed</p>
-              <p className="text-lg font-display font-medium mt-0.5" style={{ color: '#0066FF' }}>10× faster</p>
+              <p className="eyebrow text-text-muted-dark mb-1">Workflow speed</p>
+              <p className="font-display font-bold text-xl" style={{ color: '#00BB44' }}>10× faster</p>
+              <div className="mt-1.5 h-0.5 w-full" style={{ background: '#00BB44' }} aria-hidden />
             </motion.div>
           </motion.div>
         </div>
@@ -401,16 +339,16 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2.2, duration: 0.8 }}
+          transition={{ delay: 2, duration: 0.8 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
           aria-hidden
         >
-          <span className="font-body text-[0.58rem] tracking-[0.28em] text-text-muted uppercase">Scroll</span>
+          <span className="eyebrow text-text-muted-dark">Scroll</span>
           <motion.div
-            animate={reducedMotion ? {} : { y: [0, 7, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-px h-8"
-            style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.3), transparent)' }}
+            className="w-px h-10 origin-top"
+            style={{ background: 'linear-gradient(180deg, rgba(255,32,32,0.8), transparent)' }}
+            animate={reducedMotion ? {} : { scaleY: [1, 0.3, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
           />
         </motion.div>
       </div>

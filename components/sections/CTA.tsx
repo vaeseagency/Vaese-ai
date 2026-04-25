@@ -3,60 +3,46 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import CalInline from '@/components/ui/CalInline'
+import Button from '@/components/ui/Button'
 
 export default function CTA() {
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const bgY = useTransform(scrollYProgress, [0, 1], ['-4%', '4%'])
+  const bgY = useTransform(scrollYProgress, [0, 1], ['-3%', '3%'])
 
   return (
     <section id="contact" className="section-padding relative bg-bg overflow-hidden" ref={ref} aria-label="Book a call">
-      {/* Precise grid background */}
       <motion.div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 grid-dark"
         style={{ y: bgY }}
         aria-hidden
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-            backgroundSize: '72px 72px',
-          }}
-        />
-      </motion.div>
-
-      {/* Electric blue ambient — center */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        aria-hidden
-        style={{
-          background: 'radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0,102,255,0.08) 0%, transparent 70%)',
-        }}
       />
 
-      {/* Geometric corner accents */}
-      <div className="pointer-events-none absolute top-0 left-0 w-24 h-24 border-l border-t" style={{ borderColor: 'rgba(0,102,255,0.2)' }} aria-hidden />
-      <div className="pointer-events-none absolute top-0 right-0 w-24 h-24 border-r border-t" style={{ borderColor: 'rgba(0,102,255,0.2)' }} aria-hidden />
-      <div className="pointer-events-none absolute bottom-0 left-0 w-24 h-24 border-l border-b" style={{ borderColor: 'rgba(0,102,255,0.2)' }} aria-hidden />
-      <div className="pointer-events-none absolute bottom-0 right-0 w-24 h-24 border-r border-b" style={{ borderColor: 'rgba(0,102,255,0.2)' }} aria-hidden />
-
-      {/* Orbiting geometric rings */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden" aria-hidden>
-        {[280, 440, 600].map((size, i) => (
-          <motion.div
-            key={i}
-            className="absolute border"
-            style={{
-              width: size,
-              height: size,
-              borderColor: `rgba(0,102,255,${0.06 - i * 0.015})`,
-            }}
-            animate={{ rotate: 360 * (i % 2 === 0 ? 1 : -1) }}
-            transition={{ duration: 22 + i * 12, repeat: Infinity, ease: 'linear' }}
-          />
-        ))}
+      {/* Multi-color ambient radials */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div style={{ position: 'absolute', top: '10%', left: '10%', width: 300, height: 300, background: 'radial-gradient(circle, rgba(255,32,32,0.06) 0%, transparent 70%)' }} />
+        <div style={{ position: 'absolute', bottom: '10%', right: '10%', width: 300, height: 300, background: 'radial-gradient(circle, rgba(0,85,255,0.06) 0%, transparent 70%)' }} />
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 400, height: 400, background: 'radial-gradient(circle, rgba(0,187,68,0.04) 0%, transparent 70%)' }} />
       </div>
+
+      {/* Geometric corner brackets */}
+      {[
+        { corner: 'top-0 left-0', borders: 'border-l border-t' },
+        { corner: 'top-0 right-0', borders: 'border-r border-t' },
+        { corner: 'bottom-0 left-0', borders: 'border-l border-b' },
+        { corner: 'bottom-0 right-0', borders: 'border-r border-b' },
+      ].map(({ corner, borders }, i) => (
+        <motion.div
+          key={corner}
+          className={`pointer-events-none absolute ${corner} w-20 h-20 ${borders}`}
+          style={{ borderColor: 'rgba(255,32,32,0.2)' }}
+          initial={{ opacity: 0, scale: 0.6 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: i * 0.1 + 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          aria-hidden
+        />
+      ))}
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-8">
         {/* Heading */}
@@ -66,42 +52,49 @@ export default function CTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="eyebrow mb-7"
+            className="eyebrow text-text-muted-dark mb-7"
           >
             Let&apos;s talk
           </motion.p>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display font-light text-[clamp(2.4rem,6vw,4.5rem)] leading-[1.02] tracking-[-0.02em] text-white mb-7"
-          >
-            Book a Free{' '}
-            <span className="italic" style={{ color: '#0066FF' }}>Discovery Call</span>
-          </motion.h2>
+          {/* Title — split word reveal */}
+          <div className="mb-7 overflow-hidden">
+            {'Book a Free Discovery Call'.split(' ').map((word, i) => (
+              <span key={i} className="inline-block overflow-hidden mr-[0.3em] last:mr-0">
+                <motion.span
+                  className="inline-block font-display font-bold text-[clamp(2.2rem,6vw,4.2rem)] leading-tight tracking-tight"
+                  style={{ color: i === 3 ? '#FF2020' : '#ffffff' }}
+                  initial={{ y: '110%' }}
+                  whileInView={{ y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.75, delay: i * 0.09 + 0.1, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {word}
+                </motion.span>
+              </span>
+            ))}
+          </div>
 
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ filter: 'blur(8px)', opacity: 0 }}
+            whileInView={{ filter: 'blur(0px)', opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.28 }}
-            className="font-body text-sm text-text-muted leading-[1.8] max-w-lg mx-auto"
+            transition={{ duration: 0.8, delay: 0.55 }}
+            className="font-body text-sm text-text-muted-dark leading-[1.8] max-w-lg mx-auto"
           >
             Discover how Vaese AI can automate and grow your business.
             Pick a time that works for you.
           </motion.p>
         </div>
 
-        {/* Cal.com inline embed */}
+        {/* Cal.com embed */}
         <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 32, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0 }}
-          transition={{ duration: 0.8, delay: 0.38 }}
-          className="border border-border-subtle"
-          style={{ background: 'rgba(12,12,12,0.9)' }}
+          transition={{ duration: 0.85, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="border border-border-light"
+          style={{ background: 'rgba(17,17,17,0.9)' }}
         >
           <CalInline calLink="vaese-ai-x3fvop/30min" />
         </motion.div>
@@ -111,20 +104,14 @@ export default function CTA() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-6 font-body text-xs text-text-muted"
+          transition={{ duration: 0.8, delay: 0.65 }}
+          className="mt-10 flex flex-wrap items-center justify-center gap-6 font-body text-xs text-text-muted-dark"
         >
-          <span className="tracking-widest uppercase text-[0.6rem]">Or reach us directly:</span>
-          <a
-            href="mailto:agency@vaese.info"
-            className="hover:text-white transition-colors duration-200 border-b border-transparent hover:border-white/20"
-          >
+          <span className="eyebrow text-text-muted-dark">Or reach us directly:</span>
+          <a href="mailto:agency@vaese.info" className="hover:text-white transition-colors duration-200 border-b border-transparent hover:border-white/25 pb-px">
             agency@vaese.info
           </a>
-          <a
-            href="tel:+31687862661"
-            className="hover:text-white transition-colors duration-200 border-b border-transparent hover:border-white/20"
-          >
+          <a href="tel:+31687862661" className="hover:text-white transition-colors duration-200 border-b border-transparent hover:border-white/25 pb-px">
             +31 6 87862661
           </a>
         </motion.div>

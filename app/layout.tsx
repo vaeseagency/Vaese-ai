@@ -1,20 +1,19 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Plus_Jakarta_Sans } from 'next/font/google'
+import { Space_Grotesk, Inter } from 'next/font/google'
 import CustomCursor from '@/components/layout/CustomCursor'
 import './globals.css'
 
-const cormorant = Cormorant_Garamond({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--font-display',
-  weight: ['300', '400', '500', '600', '700'],
-  style: ['normal', 'italic'],
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 })
 
-const jakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-body',
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['300', '400', '500', '600'],
   display: 'swap',
 })
 
@@ -47,33 +46,24 @@ export const metadata: Metadata = {
   category: 'technology',
   alternates: {
     canonical: 'https://vaese.ai',
-    languages: {
-      'nl-NL': 'https://vaese.ai',
-      'en-US': 'https://vaese.ai',
-    },
+    languages: { 'nl-NL': 'https://vaese.ai', 'en-US': 'https://vaese.ai' },
   },
   openGraph: {
     title: 'Vaese AI | AI Automatisering & Voice Agents voor Bedrijven',
-    description:
-      'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, website automatisering, lead generatie en sales categorisatie.',
+    description: 'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, website automatisering, lead generatie en sales categorisatie.',
     type: 'website',
     url: 'https://vaese.ai',
     siteName: 'Vaese AI',
     locale: 'nl_NL',
-    images: [{ url: '/logo.svg', width: 1200, height: 630, alt: 'Vaese AI — AI Automatisering voor Bedrijven' }],
+    images: [{ url: '/logo.svg', width: 1200, height: 630, alt: 'Vaese AI' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Vaese AI | AI Automatisering & Voice Agents voor Bedrijven',
-    description:
-      'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, automatisering, lead generatie en sales categorisatie.',
+    description: 'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, automatisering, lead generatie en sales categorisatie.',
     images: ['/logo.svg'],
   },
-  icons: {
-    icon: '/logo.svg',
-    shortcut: '/logo.svg',
-    apple: '/logo.svg',
-  },
+  icons: { icon: '/logo.svg', shortcut: '/logo.svg', apple: '/logo.svg' },
   robots: {
     index: true,
     follow: true,
@@ -87,28 +77,17 @@ const jsonLd = {
   name: 'Vaese AI',
   url: 'https://vaese.ai',
   logo: 'https://vaese.ai/logo.svg',
-  description:
-    'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, website automatisering, lead generatie en sales categorisatie.',
+  description: 'Vaese AI helpt bedrijfseigenaren groeien met AI: voice agents, chatbots, website automatisering, lead generatie en sales categorisatie.',
   areaServed: 'NL',
-  serviceType: [
-    'Voice Agents',
-    'AI Chatbots',
-    'Website Automatisering',
-    'Lead Generatie',
-    'Sales Categorisatie',
-    'AI Automatisering',
-  ],
+  serviceType: ['Voice Agents', 'AI Chatbots', 'Website Automatisering', 'Lead Generatie', 'Sales Categorisatie', 'AI Automatisering'],
   sameAs: ['https://vaese.ai'],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="nl" className={`${cormorant.variable} ${jakarta.variable}`}>
-      <body className="font-body bg-bg text-white antialiased selection:bg-accent/20 selection:text-white">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+    <html lang="nl" className={`${spaceGrotesk.variable} ${inter.variable}`}>
+      <body className="font-body bg-bg text-white antialiased selection:bg-red/20 selection:text-white">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <CustomCursor />
         {children}
       </body>

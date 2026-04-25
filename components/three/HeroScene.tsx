@@ -33,11 +33,19 @@ function ParticleField() {
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
       pos[i * 3 + 2] = (Math.random() - 0.5) * 6
 
-      // Mix electric blue (#0066FF) and white
+      // Mix red (#FF2020), blue (#0055FF), white — multi-color accents
       const mix = Math.random()
-      col[i * 3] = 0.0 * (1 - mix) + 1.0 * mix       // R: blue→white
-      col[i * 3 + 1] = 0.4 * (1 - mix) + 1.0 * mix   // G
-      col[i * 3 + 2] = 1.0 * (1 - mix) + 1.0 * mix   // B
+      const palette = Math.random()
+      if (palette < 0.33) {
+        // red
+        col[i * 3] = 1.0; col[i * 3 + 1] = 0.125; col[i * 3 + 2] = 0.125
+      } else if (palette < 0.66) {
+        // blue
+        col[i * 3] = 0.0; col[i * 3 + 1] = 0.33; col[i * 3 + 2] = 1.0
+      } else {
+        // white (most particles)
+        col[i * 3] = 1.0 - mix * 0.3; col[i * 3 + 1] = 1.0 - mix * 0.3; col[i * 3 + 2] = 1.0 - mix * 0.3
+      }
     }
     return [pos, col]
   }, [])
@@ -83,40 +91,40 @@ function WireframeOrb({ mouse }: { mouse: React.MutableRefObject<{ x: number; y:
 
   return (
     <group ref={groupRef}>
-      {/* Core wireframe icosahedron — electric blue */}
+      {/* Core wireframe — white/near-white */}
       <mesh>
         <icosahedronGeometry args={[1.65, 1]} />
-        <meshBasicMaterial color="#0066FF" wireframe transparent opacity={0.3} />
+        <meshBasicMaterial color="#ffffff" wireframe transparent opacity={0.25} />
       </mesh>
 
-      {/* Semi-transparent inner shell */}
+      {/* Inner shell */}
       <mesh>
         <icosahedronGeometry args={[1.62, 1]} />
-        <meshBasicMaterial color="#0066FF" transparent opacity={0.03} side={THREE.BackSide} />
+        <meshBasicMaterial color="#FF2020" transparent opacity={0.03} side={THREE.BackSide} />
       </mesh>
 
-      {/* Outer icosahedron for depth */}
+      {/* Outer icosahedron */}
       <mesh>
         <icosahedronGeometry args={[2.1, 1]} />
-        <meshBasicMaterial color="#3385FF" wireframe transparent opacity={0.07} />
+        <meshBasicMaterial color="#ffffff" wireframe transparent opacity={0.06} />
       </mesh>
 
-      {/* Orbital ring 1 — equatorial, white */}
+      {/* Ring 1 — red */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[2.5, 0.007, 16, 120]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0.35} />
+        <torusGeometry args={[2.5, 0.008, 16, 120]} />
+        <meshBasicMaterial color="#FF2020" transparent opacity={0.5} />
       </mesh>
 
-      {/* Orbital ring 2 — tilted, electric blue */}
+      {/* Ring 2 — blue */}
       <mesh rotation={[Math.PI / 3.5, Math.PI / 5, 0]}>
         <torusGeometry args={[2.85, 0.005, 16, 120]} />
-        <meshBasicMaterial color="#0066FF" transparent opacity={0.5} />
+        <meshBasicMaterial color="#0055FF" transparent opacity={0.4} />
       </mesh>
 
-      {/* Orbital ring 3 — counter-tilted, white */}
+      {/* Ring 3 — green */}
       <mesh rotation={[-Math.PI / 4, Math.PI / 3, Math.PI / 8]}>
         <torusGeometry args={[3.1, 0.004, 16, 120]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0.12} />
+        <meshBasicMaterial color="#00BB44" transparent opacity={0.3} />
       </mesh>
     </group>
   )
