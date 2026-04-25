@@ -11,7 +11,7 @@ export default function CTA() {
   const bgY = useTransform(scrollYProgress, [0, 1], ['-3%', '3%'])
 
   return (
-    <section id="contact" className="section-padding relative bg-bg overflow-hidden" ref={ref} aria-label="Book a call">
+    <section id="contact" className="section-padding relative bg-bg overflow-hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.08)' }} ref={ref} aria-label="Book a call">
       <motion.div
         className="pointer-events-none absolute inset-0 grid-dark"
         style={{ y: bgY }}
@@ -35,7 +35,7 @@ export default function CTA() {
         <motion.div
           key={corner}
           className={`pointer-events-none absolute ${corner} w-20 h-20 ${borders}`}
-          style={{ borderColor: 'rgba(255,32,32,0.2)' }}
+          style={{ borderColor: 'rgba(255,32,32,0.35)' }}
           initial={{ opacity: 0, scale: 0.6 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -62,7 +62,7 @@ export default function CTA() {
             {'Book a Free Discovery Call'.split(' ').map((word, i) => (
               <span key={i} className="inline-block overflow-hidden mr-[0.3em] last:mr-0">
                 <motion.span
-                  className="inline-block font-display font-bold text-[clamp(2.2rem,6vw,4.2rem)] leading-tight tracking-tight"
+                  className="inline-block font-display font-bold text-[clamp(2.8rem,6.5vw,5rem)] leading-tight tracking-tight"
                   style={{ color: i === 3 ? '#FF2020' : '#ffffff' }}
                   initial={{ y: '110%' }}
                   whileInView={{ y: 0 }}
@@ -93,8 +93,8 @@ export default function CTA() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0 }}
           transition={{ duration: 0.85, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="border border-border-light"
-          style={{ background: 'rgba(17,17,17,0.9)' }}
+          className="border"
+          style={{ background: 'rgba(17,17,17,0.9)', borderColor: 'rgba(255,255,255,0.15)' }}
         >
           <CalInline calLink="vaese-ai-x3fvop/30min" />
         </motion.div>

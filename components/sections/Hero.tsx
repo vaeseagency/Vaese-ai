@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { motion, useScroll, useTransform, useSpring, useVelocity } from 'framer-motion'
 import { ArrowRight, ChevronDown } from 'lucide-react'
 import Button from '@/components/ui/Button'
+import ShinyButton from '@/components/ui/ShinyButton'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const HeroScene = dynamic(
@@ -23,7 +24,7 @@ function useScramble(text: string, active: boolean, delayMs = 0, speed = 42) {
     if (!active || reducedMotion) { setOutput(text); return }
 
     const start = performance.now() + delayMs
-    const SETTLE = speed      // ms per character settle
+    const SETTLE = speed
     let lastCycle = 0
 
     const tick = (now: number) => {
@@ -56,7 +57,6 @@ function useScramble(text: string, active: boolean, delayMs = 0, speed = 42) {
   return output
 }
 
-// Ambient geometric grid on the dark hero background
 function HeroGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouseRef = useRef({ x: -9999, y: -9999 })
@@ -155,14 +155,12 @@ export default function Hero() {
   const { scrollY } = useScroll()
   const scrollVelocity = useVelocity(scrollY)
 
-  // Velocity-based tilt — scroll fast = content tilts back
   const rawTilt = useTransform(scrollVelocity, [-2000, 0, 2000], [2, 0, -2])
   const tilt = useSpring(rawTilt, { stiffness: 80, damping: 30 })
 
   const parallaxY = useTransform(scrollY, [0, 600], [0, -60])
   const fadeOut = useTransform(scrollY, [0, 380], [1, 0])
 
-  // Scramble triggers
   const line1 = useScramble('Intelligence,', mounted, 200, 46)
   const line2 = useScramble('deployed.', mounted, 900, 55)
 
@@ -172,11 +170,9 @@ export default function Hero() {
       aria-label="Hero"
       ref={containerRef}
     >
-      {/* Living grid background */}
       {!reducedMotion && <HeroGrid />}
       <div className="pointer-events-none absolute inset-0 grid-dark" aria-hidden />
 
-      {/* Radial vignette */}
       <div
         className="pointer-events-none absolute inset-0 z-[1]"
         aria-hidden
@@ -186,7 +182,7 @@ export default function Hero() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-16 w-full">
         <div className="grid lg:grid-cols-[1fr_0.85fr] gap-8 lg:gap-0 items-center min-h-[calc(100vh-7rem)]">
 
-          {/* Left: text — velocity tilt applied here */}
+          {/* Left: text */}
           <motion.div
             style={reducedMotion ? {} : { y: parallaxY, opacity: fadeOut, rotateX: tilt }}
             className="flex flex-col justify-center"
@@ -194,7 +190,7 @@ export default function Hero() {
               `perspective(1200px) rotateX(${rotateX}) translateY(${y})`
             }
           >
-            {/* Eyebrow — slides in from left */}
+            {/* Eyebrow */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -219,7 +215,7 @@ export default function Hero() {
                 initial={{ y: '108%' }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.85, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display font-bold text-[clamp(3.6rem,8.5vw,7.8rem)] leading-[0.9] tracking-[-0.03em] text-white scramble-text block"
+                className="font-display font-bold text-[clamp(4rem,9vw,8.5rem)] leading-[0.9] tracking-[-0.03em] text-white scramble-text block"
               >
                 {line1}
               </motion.h1>
@@ -231,24 +227,24 @@ export default function Hero() {
                 initial={{ y: '108%' }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.85, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display font-bold text-[clamp(3.6rem,8.5vw,7.8rem)] leading-[0.9] tracking-[-0.03em] scramble-text block"
+                className="font-display font-bold text-[clamp(4rem,9vw,8.5rem)] leading-[0.9] tracking-[-0.03em] scramble-text block"
                 style={{ color: '#FF2020' }}
               >
                 {line2}
               </motion.h1>
             </div>
 
-            {/* Horizontal divider — draws in */}
+            {/* Divider */}
             <motion.div
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 1, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="mt-9 mb-9 h-px max-w-sm origin-left"
-              style={{ background: 'rgba(255,255,255,0.12)' }}
+              style={{ background: 'rgba(255,255,255,0.18)' }}
               aria-hidden
             />
 
-            {/* Sub-headline — blur reveal */}
+            {/* Sub-headline */}
             <motion.p
               initial={{ filter: 'blur(10px)', opacity: 0, y: 18 }}
               animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
@@ -259,23 +255,17 @@ export default function Hero() {
               autonomously, around the clock.
             </motion.p>
 
-            {/* CTAs — staggered spring entrance */}
+            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.05, duration: 0.5 }}
-              className="mt-10 flex flex-wrap gap-4"
+              className="mt-10 flex flex-wrap gap-4 items-center"
             >
-              <Button variant="red" size="lg" magnetic href="#contact" className="group">
+              <ShinyButton href="#contact">
                 Book a strategy call
-                <motion.span
-                  className="inline-block"
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <ArrowRight size={15} />
-                </motion.span>
-              </Button>
+                <ArrowRight size={15} />
+              </ShinyButton>
               <Button variant="outline-light" size="lg" href="#services">
                 See what we build
               </Button>
@@ -310,12 +300,12 @@ export default function Hero() {
           >
             <div className="absolute inset-0" aria-hidden><HeroScene /></div>
 
-            {/* Floating stats — magnetic effect built in via animation */}
+            {/* Floating stats */}
             <motion.div
               animate={reducedMotion ? {} : { y: [-6, 6, -6] }}
               transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-[12%] right-[4%] z-10 p-4 border border-white/08"
-              style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(12px)' }}
+              className="absolute top-[12%] right-[4%] z-10 p-4 border"
+              style={{ background: 'rgba(10,10,10,0.88)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.15)' }}
             >
               <p className="eyebrow text-text-muted-dark mb-1">Avg. deployment</p>
               <p className="font-display font-bold text-xl text-white">14 days</p>
@@ -325,8 +315,8 @@ export default function Hero() {
             <motion.div
               animate={reducedMotion ? {} : { y: [6, -6, 6] }}
               transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-              className="absolute bottom-[18%] left-[2%] z-10 p-4 border border-white/08"
-              style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(12px)' }}
+              className="absolute bottom-[18%] left-[2%] z-10 p-4 border"
+              style={{ background: 'rgba(10,10,10,0.88)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.15)' }}
             >
               <p className="eyebrow text-text-muted-dark mb-1">Workflow speed</p>
               <p className="font-display font-bold text-xl" style={{ color: '#00BB44' }}>10× faster</p>

@@ -25,9 +25,9 @@ export default function About() {
   const manifestoInView = useInView(manifestoRef, { once: true, margin: '-60px 0px' })
 
   return (
-    <section id="about" className="section-padding bg-bg-white relative overflow-hidden" ref={sectionRef}>
+    <section id="about" className="section-padding bg-bg relative overflow-hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.08)' }} ref={sectionRef}>
       <motion.div
-        className="pointer-events-none absolute inset-0 grid-white"
+        className="pointer-events-none absolute inset-0 grid-dark"
         style={{ y: bgY }}
         aria-hidden
       />
@@ -36,7 +36,7 @@ export default function About() {
       <div
         className="pointer-events-none absolute top-0 right-0 w-72 h-72"
         aria-hidden
-        style={{ background: 'radial-gradient(circle at top right, rgba(0,85,255,0.06) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle at top right, rgba(0,85,255,0.1) 0%, transparent 70%)' }}
       />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -59,7 +59,7 @@ export default function About() {
               {'AI is the new infrastructure. Not a feature — the foundation.'.split(' ').map((word, i) => (
                 <span key={i} className="inline-block overflow-hidden mr-[0.28em] last:mr-0">
                   <motion.span
-                    className="inline-block font-display font-bold text-[clamp(1.8rem,3.5vw,2.8rem)] leading-tight tracking-tight text-text-dark"
+                    className="inline-block font-display font-bold text-[clamp(2rem,3.8vw,3.2rem)] leading-tight tracking-tight text-white"
                     initial={{ y: '110%' }}
                     animate={manifestoInView ? { y: 0 } : {}}
                     transition={{ duration: 0.65, delay: i * 0.05 + 0.1, ease: [0.22, 1, 0.36, 1] }}
@@ -70,13 +70,13 @@ export default function About() {
               ))}
             </div>
 
-            {/* Body text — lines blur in staggered */}
+            {/* Body text */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={manifestoInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.3, delay: 0.6 }}
               className="space-y-5 border-l-2 pl-6"
-              style={{ borderColor: 'rgba(0,85,255,0.2)' }}
+              style={{ borderColor: 'rgba(0,85,255,0.5)' }}
             >
               {[
                 "Every decade, a new layer of infrastructure reshapes what's possible in business. The internet changed distribution. The cloud changed scale. AI is changing cognition. The companies that build on AI now won't just move faster — they'll operate in an entirely different dimension from those that don't.",
@@ -87,7 +87,7 @@ export default function About() {
                   initial={{ filter: 'blur(10px)', opacity: 0, y: 16 }}
                   animate={manifestoInView ? { filter: 'blur(0px)', opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.8, delay: 0.65 + i * 0.2 }}
-                  className="font-body text-sm text-text-muted leading-[1.85]"
+                  className="font-body text-sm text-text-muted-dark leading-[1.85]"
                 >
                   {para}
                 </motion.p>
@@ -101,13 +101,13 @@ export default function About() {
               className="mt-10 flex items-center gap-3"
             >
               <div className="w-8 h-px" style={{ background: '#0055FF' }} aria-hidden />
-              <span className="eyebrow text-text-muted">
+              <span className="eyebrow text-text-muted-dark">
                 Founded to make AI the default, not the exception.
               </span>
             </motion.div>
           </div>
 
-          {/* Right: Values — alternating entry from sides */}
+          {/* Right: Values */}
           <div ref={valuesRef} className="space-y-0 pt-2">
             {values.map((item, i) => (
               <motion.div
@@ -116,12 +116,12 @@ export default function About() {
                 animate={valuesInView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.7, delay: i * 0.12, type: 'spring', stiffness: 90, damping: 14 }}
                 className="flex gap-5 py-7 border-b group relative overflow-hidden"
-                style={{ borderColor: 'rgba(0,0,0,0.09)' }}
+                style={{ borderColor: 'rgba(255,255,255,0.1)' }}
               >
                 {/* Number index */}
                 <span
                   className="font-display font-bold text-2xl leading-none select-none w-8 flex-shrink-0 text-right mt-0.5"
-                  style={{ color: `${item.color}25` }}
+                  style={{ color: `${item.color}30` }}
                 >
                   {String(i + 1).padStart(2, '0')}
                 </span>
@@ -129,15 +129,15 @@ export default function About() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: item.color }} aria-hidden />
-                    <h3 className="font-display font-bold text-sm text-text-dark">{item.title}</h3>
+                    <h3 className="font-display font-bold text-sm text-white">{item.title}</h3>
                   </div>
-                  <p className="font-body text-xs text-text-muted leading-[1.8]">{item.body}</p>
+                  <p className="font-body text-xs text-text-muted-dark leading-[1.8]">{item.body}</p>
                 </div>
 
                 {/* Hover fill */}
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
-                  style={{ background: `${item.color}04`, opacity: 0 }}
+                  style={{ background: `${item.color}05`, opacity: 0 }}
                   whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                   aria-hidden

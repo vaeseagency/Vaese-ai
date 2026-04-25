@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useScroll } from 'framer-motion'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
 
 const navLinks = [
   { label: 'Services', href: '#services' },
+  { label: 'Process', href: '#process' },
   { label: 'Work', href: '#work' },
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
@@ -14,25 +15,34 @@ const navLinks = [
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
+  const [hidden, setHidden] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { scrollY } = useScroll()
+  const lastScrollY = useRef(0)
 
   useEffect(() => {
-    return scrollY.on('change', (v) => setScrolled(v > 40))
+    return scrollY.on('change', (v) => {
+      setScrolled(v > 40)
+      if (v > lastScrollY.current && v > 120) setHidden(true)
+      else if (v < lastScrollY.current) setHidden(false)
+      lastScrollY.current = v
+    })
   }, [scrollY])
 
   return (
     <motion.header
       className="fixed top-0 inset-x-0 z-50"
+      animate={{ y: hidden && !mobileOpen ? -80 : 0 }}
+      transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
       style={{
-        backgroundColor: scrolled ? 'rgba(10,10,10,0.94)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : '1px solid transparent',
+        backgroundColor: scrolled ? 'rgba(10,10,10,0.96)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(24px) saturate(180%)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
         transition: 'background-color 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease',
       }}
     >
       <nav className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Logo — slight spring bounce on mount */}
+        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -107,7 +117,7 @@ export default function Navigation() {
         </button>
       </nav>
 
-      {/* Mobile menu — geometric clip reveal */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -115,8 +125,8 @@ export default function Navigation() {
             animate={{ clipPath: 'inset(0 0 0% 0)' }}
             exit={{ clipPath: 'inset(0 0 100% 0)' }}
             transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-            className="md:hidden border-t border-border-light"
-            style={{ background: 'rgba(10,10,10,0.98)', backdropFilter: 'blur(24px)' }}
+            className="md:hidden border-t"
+            style={{ background: 'rgba(10,10,10,0.98)', backdropFilter: 'blur(24px)', borderColor: 'rgba(255,255,255,0.1)' }}
           >
             <div className="px-6 py-8 flex flex-col">
               {navLinks.map((link, i) => (
@@ -128,7 +138,8 @@ export default function Navigation() {
                 >
                   <Link
                     href={link.href}
-                    className="block py-4 border-b border-border-light font-body text-sm font-medium tracking-widest uppercase text-text-muted-dark hover:text-white transition-colors"
+                    className="block py-4 border-b font-body text-sm font-medium tracking-widest uppercase text-text-muted-dark hover:text-white transition-colors"
+                    style={{ borderColor: 'rgba(255,255,255,0.1)' }}
                     onClick={() => setMobileOpen(false)}
                   >
                     {link.label}
@@ -138,7 +149,7 @@ export default function Navigation() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.38, duration: 0.4 }}
+                transition={{ delay: 0.42, duration: 0.4 }}
                 className="mt-6"
               >
                 <Button variant="red" size="md" href="#contact" className="w-full" onClick={() => setMobileOpen(false)}>

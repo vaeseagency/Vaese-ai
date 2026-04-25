@@ -114,7 +114,7 @@ export default function Process() {
   const lineInView = useInView(sectionRef, { once: true, margin: '-100px' })
 
   return (
-    <section className="section-padding relative bg-bg overflow-hidden" ref={sectionRef}>
+    <section id="process" className="section-padding relative bg-bg overflow-hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.08)' }} ref={sectionRef}>
       <div className="pointer-events-none absolute inset-0 grid-dark" aria-hidden />
 
       {/* Red accent glow — top center */}
@@ -143,7 +143,7 @@ export default function Process() {
                 whileInView={{ y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.85, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display font-bold text-[clamp(2.2rem,5vw,3.8rem)] leading-tight tracking-tight text-white"
+                className="font-display font-bold text-[clamp(2.8rem,5.5vw,4.8rem)] leading-tight tracking-tight text-white"
               >
                 From zero to{' '}
                 <span style={{ color: '#00BB44' }}>autonomous</span>{' '}

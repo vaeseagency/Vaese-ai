@@ -54,7 +54,6 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
   const inView = useInView(ref, { once: true, margin: '-50px 0px' })
 
   return (
-    // 3D UNFOLD — card folds out from top (rotateX from -90 to 0)
     <motion.div
       ref={ref}
       initial={{ opacity: 0, rotateX: -75, y: -30 }}
@@ -69,9 +68,7 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
       style={{ perspective: '1400px', transformOrigin: 'top center' }}
       className="h-full"
     >
-      <div
-        className="card-white h-full flex flex-col p-8 lg:p-10 relative overflow-hidden"
-      >
+      <div className="card-white h-full flex flex-col p-8 lg:p-10 relative overflow-hidden">
         {/* Accent top bar */}
         <div
           className="absolute top-0 left-0 right-0 h-[3px]"
@@ -93,10 +90,7 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
             transition={{ duration: 2, repeat: Infinity }}
             aria-hidden
           />
-          <span
-            className="eyebrow"
-            style={{ color: service.tagColor }}
-          >
+          <span className="eyebrow" style={{ color: service.tagColor }}>
             {service.tag}
           </span>
         </motion.div>
@@ -122,7 +116,7 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
           </div>
         </div>
 
-        {/* Description — blur reveal */}
+        {/* Description */}
         <motion.p
           initial={{ filter: 'blur(8px)', opacity: 0 }}
           animate={inView ? { filter: 'blur(0px)', opacity: 1 } : {}}
@@ -134,7 +128,7 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
 
         <div className="w-full h-px mb-7" style={{ background: `${service.accentColor}18` }} aria-hidden />
 
-        {/* Bullets — stagger from left */}
+        {/* Bullets */}
         <ul className="space-y-3 mb-9 flex-1">
           {service.bullets.map((bullet, bi) => (
             <motion.li
@@ -150,7 +144,7 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
           ))}
         </ul>
 
-        {/* CTA arrow link */}
+        {/* CTA */}
         <motion.a
           href={service.ctaHref}
           className="group inline-flex items-center gap-2.5 mt-auto font-display font-semibold text-sm"
@@ -168,8 +162,15 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
 
 export default function Services() {
   return (
-    <section id="services" className="section-padding bg-bg-white relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 grid-white" aria-hidden />
+    <section id="services" className="section-padding bg-bg relative overflow-hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+      <div className="pointer-events-none absolute inset-0 grid-dark" aria-hidden />
+
+      {/* Blue accent glow */}
+      <div
+        className="pointer-events-none absolute top-0 right-1/4 w-[400px] h-[300px]"
+        aria-hidden
+        style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(0,85,255,0.06) 0%, transparent 70%)' }}
+      />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
@@ -185,14 +186,13 @@ export default function Services() {
             What we offer
           </motion.p>
 
-          {/* Title — clip-path wipe from bottom */}
           <div className="overflow-hidden">
             <motion.h2
               initial={{ y: '100%' }}
               whileInView={{ y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="font-display font-bold text-[clamp(2.2rem,5vw,3.8rem)] leading-tight tracking-tight text-text-dark"
+              className="font-display font-bold text-[clamp(2.8rem,5.5vw,4.8rem)] leading-tight tracking-tight text-white"
             >
               Two offers.{' '}
               <span style={{ color: '#0055FF' }}>Both exceptional.</span>
@@ -204,7 +204,7 @@ export default function Services() {
             whileInView={{ opacity: 1, filter: 'blur(0px)' }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.25 }}
-            className="mt-5 text-sm text-text-muted font-body leading-[1.8] max-w-md"
+            className="mt-5 text-sm text-text-muted-dark font-body leading-[1.8] max-w-md"
           >
             We keep our focus tight so we can deliver at the highest level. A free website to
             start the relationship — and an AI voice agent to transform how you handle every call.

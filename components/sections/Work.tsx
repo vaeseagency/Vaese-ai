@@ -173,7 +173,7 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
 
 export default function Work() {
   return (
-    <section id="work" className="section-padding bg-bg relative overflow-hidden">
+    <section id="work" className="section-padding bg-bg relative overflow-hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
       <div className="pointer-events-none absolute inset-0 grid-dark" aria-hidden />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -194,7 +194,7 @@ export default function Work() {
                 whileInView={{ y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.85, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display font-bold text-[clamp(2.2rem,5vw,3.8rem)] leading-tight tracking-tight text-white"
+                className="font-display font-bold text-[clamp(2.8rem,5.5vw,4.8rem)] leading-tight tracking-tight text-white"
               >
                 What we&apos;ve{' '}
                 <span style={{ color: '#00BB44' }}>deployed.</span>

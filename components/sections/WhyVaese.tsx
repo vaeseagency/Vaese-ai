@@ -22,14 +22,12 @@ function MechanicalCounter({ target, suffix, color, isInView }: {
     const duration = 2200
     const start = performance.now()
 
-    // Start with blur
     setBlurred(true)
     const blurTimeout = setTimeout(() => setBlurred(false), duration * 0.7)
 
     const animate = (now: number) => {
       const elapsed = now - start
       const progress = Math.min(elapsed / duration, 1)
-      // Mechanical easing: fast start, then rhythmic ticking near end
       const eased = progress < 0.7
         ? 1 - Math.pow(1 - progress / 0.7, 3)
         : 0.7 + 0.3 * ((progress - 0.7) / 0.3)
@@ -64,29 +62,25 @@ function StatCard({ stat, index }: { stat: (typeof stats)[0]; index: number }) {
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
       animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
       transition={{ duration: 0.8, delay: index * 0.12, type: 'spring', stiffness: 90, damping: 14 }}
-      className="relative bg-bg-white border border-border-dark overflow-hidden group"
-      style={{ borderColor: 'rgba(0,0,0,0.09)' }}
+      className="card-dark-strong relative overflow-hidden group"
     >
       {/* Corner accent */}
       <div
         className="absolute top-0 right-0 w-12 h-12"
-        style={{
-          background: `linear-gradient(225deg, ${stat.color}20, transparent 60%)`,
-        }}
+        style={{ background: `linear-gradient(225deg, ${stat.color}25, transparent 60%)` }}
         aria-hidden
       />
 
       <div className="p-8 lg:p-10">
-        {/* Huge number with mechanical blur counter */}
         <div className="font-display font-bold text-[clamp(3.5rem,6vw,5.5rem)] leading-none mb-4 tabular-nums tracking-tight">
           <MechanicalCounter target={stat.value} suffix={stat.suffix} color={stat.color} isInView={inView} />
         </div>
 
-        <h3 className="font-display font-semibold text-sm text-text-dark mb-2 tracking-tight">{stat.label}</h3>
-        <p className="font-body text-xs text-text-muted leading-relaxed">{stat.description}</p>
+        <h3 className="font-display font-semibold text-sm text-white mb-2 tracking-tight">{stat.label}</h3>
+        <p className="font-body text-xs text-text-muted-dark leading-relaxed">{stat.description}</p>
       </div>
 
-      {/* Bottom fill bar — draws in on view */}
+      {/* Bottom fill bar */}
       <motion.div
         className="absolute bottom-0 left-0 h-[3px]"
         style={{ background: stat.color }}
@@ -99,7 +93,7 @@ function StatCard({ stat, index }: { stat: (typeof stats)[0]; index: number }) {
       {/* Hover overlay */}
       <motion.div
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400"
-        style={{ background: `radial-gradient(circle at 50% 100%, ${stat.color}07, transparent 70%)` }}
+        style={{ background: `radial-gradient(circle at 50% 100%, ${stat.color}08, transparent 70%)` }}
         aria-hidden
       />
     </motion.div>
@@ -108,8 +102,15 @@ function StatCard({ stat, index }: { stat: (typeof stats)[0]; index: number }) {
 
 export default function WhyVaese() {
   return (
-    <section className="section-padding relative bg-bg-white overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 grid-white" aria-hidden />
+    <section className="section-padding relative bg-bg overflow-hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+      <div className="pointer-events-none absolute inset-0 grid-dark" aria-hidden />
+
+      {/* Red accent glow */}
+      <div
+        className="pointer-events-none absolute top-0 left-1/3 w-[500px] h-[280px]"
+        aria-hidden
+        style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(255,32,32,0.06) 0%, transparent 70%)' }}
+      />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
@@ -132,7 +133,7 @@ export default function WhyVaese() {
                 whileInView={{ y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.85, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display font-bold text-[clamp(2.2rem,5vw,3.8rem)] leading-tight tracking-tight text-text-dark"
+                className="font-display font-bold text-[clamp(2.8rem,5.5vw,4.8rem)] leading-tight tracking-tight text-white"
               >
                 Outcomes that{' '}
                 <span style={{ color: '#FF2020' }}>compound.</span>
@@ -145,7 +146,7 @@ export default function WhyVaese() {
             whileInView={{ opacity: 1, filter: 'blur(0px)' }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="font-body text-sm text-text-muted leading-[1.8] max-w-xs lg:text-right"
+            className="font-body text-sm text-text-muted-dark leading-[1.8] max-w-xs lg:text-right"
           >
             These aren&apos;t promises. They&apos;re the baseline results our clients see once AI is
             running their most critical workflows.
@@ -165,7 +166,7 @@ export default function WhyVaese() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: 0.5 }}
-          className="mt-14 pt-10 border-t border-border-dark flex flex-wrap items-center justify-between gap-6"
+          className="mt-14 pt-10 border-t border-border-light flex flex-wrap items-center justify-between gap-6"
         >
           {['E-commerce', 'SaaS', 'Real Estate', 'Finance', 'Healthcare', 'Logistics'].map((industry, i) => (
             <motion.span
@@ -174,7 +175,7 @@ export default function WhyVaese() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.55 + i * 0.06, duration: 0.5 }}
-              className="eyebrow text-text-muted"
+              className="eyebrow text-text-muted-dark"
             >
               {industry}
             </motion.span>
