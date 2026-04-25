@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import AnimatedText from '@/components/ui/AnimatedText'
 
 const stats = [
   {
@@ -10,52 +9,41 @@ const stats = [
     suffix: 'x',
     label: 'Faster workflows',
     description: 'Average speed improvement across automated processes',
-    color: '#7C5CFF',
   },
   {
     value: 24,
     suffix: '/7',
     label: 'Always operational',
     description: 'AI agents that never clock out, never miss a beat',
-    color: '#22D3EE',
   },
   {
     value: 0,
     suffix: '',
     label: 'Human bottlenecks',
     description: 'Critical paths where manual approval causes delay',
-    color: '#7C5CFF',
   },
   {
     value: 14,
     suffix: ' days',
     label: 'Average deployment',
     description: 'From kickoff to production-ready AI system',
-    color: '#22D3EE',
   },
 ]
 
-function CountUp({
-  target,
-  suffix,
-  isInView,
-}: {
-  target: number
-  suffix: string
-  isInView: boolean
-}) {
+function CountUp({ target, suffix, isInView }: { target: number; suffix: string; isInView: boolean }) {
   const [count, setCount] = useState(0)
   const rafRef = useRef<number>(0)
 
   useEffect(() => {
     if (!isInView) return
-    const duration = 1800
+    const duration = 2000
     const start = performance.now()
 
     const animate = (now: number) => {
       const elapsed = now - start
       const progress = Math.min(elapsed / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 3)
+      // Easing: cubic out — quick start, precise settle
+      const eased = 1 - Math.pow(1 - progress, 4)
       setCount(Math.round(eased * target))
       if (progress < 1) rafRef.current = requestAnimationFrame(animate)
     }
@@ -74,101 +62,127 @@ function CountUp({
 
 function StatCard({ stat, index }: { stat: (typeof stats)[0]; index: number }) {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-60px 0px' })
+  const inView = useInView(ref, { once: true, margin: '-40px 0px' })
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-      transition={{ duration: 0.7, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
-      className="relative flex flex-col items-center text-center px-6 py-8 rounded-2xl border border-border-subtle glass group hover:border-primary-border transition-colors duration-500"
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.75, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      className="relative group"
     >
-      {/* Background glow */}
       <div
-        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+        className="h-full p-8 lg:p-10 border transition-all duration-500"
         style={{
-          background: `radial-gradient(circle at 50% 30%, ${stat.color}0A, transparent 70%)`,
+          background: '#ffffff',
+          borderColor: 'rgba(5,5,5,0.09)',
         }}
-        aria-hidden
-      />
-
-      {/* Stat value */}
-      <div
-        className="font-display font-bold text-[clamp(3rem,6vw,4.5rem)] leading-none mb-3 tabular-nums"
-        style={{ color: stat.color }}
       >
-        <CountUp target={stat.value} suffix={stat.suffix} isInView={inView} />
-      </div>
+        {/* Large number */}
+        <div
+          className="font-display font-light text-[clamp(4rem,7vw,6rem)] leading-none mb-5 tabular-nums tracking-[-0.02em]"
+          style={{ color: inView ? '#0066FF' : 'rgba(0,102,255,0.3)' }}
+        >
+          <CountUp target={stat.value} suffix={stat.suffix} isInView={inView} />
+        </div>
 
-      <h3 className="font-display font-semibold text-base text-white mb-2">{stat.label}</h3>
-      <p className="font-body text-sm text-text-muted leading-relaxed">{stat.description}</p>
+        {/* Label */}
+        <h3 className="font-body font-semibold text-sm text-bg mb-2 tracking-tight">{stat.label}</h3>
+        <p className="font-body text-xs text-text-muted-light leading-relaxed">{stat.description}</p>
+
+        {/* Accent line on hover */}
+        <motion.div
+          className="absolute bottom-0 left-0 h-[2px] w-full origin-left"
+          style={{ background: '#0066FF' }}
+          initial={{ scaleX: 0 }}
+          whileHover={{ scaleX: 1 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          aria-hidden
+        />
+      </div>
     </motion.div>
   )
 }
 
 export default function WhyVaese() {
   return (
-    <section className="section-padding relative">
-      {/* Background treatment */}
+    <section className="section-padding relative bg-bg-section overflow-hidden">
+      {/* Grid background */}
       <div
         className="pointer-events-none absolute inset-0"
         aria-hidden
         style={{
-          background:
-            'linear-gradient(180deg, transparent 0%, rgba(124,92,255,0.04) 40%, rgba(34,211,238,0.02) 60%, transparent 100%)',
+          backgroundImage: 'linear-gradient(rgba(5,5,5,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(5,5,5,0.05) 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-xs font-body font-medium tracking-widest uppercase text-primary mb-4"
-          >
-            Why Vaese AI
-          </motion.p>
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Header — asymmetric */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+          <div>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="eyebrow mb-5"
+            >
+              Why Vaese AI
+            </motion.p>
 
-          <AnimatedText
-            text="Outcomes that compound."
-            tag="h2"
-            mode="words"
-            className="font-display font-semibold text-[clamp(2rem,4.5vw,3.5rem)] leading-tight text-white"
-          />
+            <motion.h2
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.75, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display font-light text-[clamp(2.4rem,5vw,4rem)] leading-[1.05] tracking-[-0.01em] text-bg"
+            >
+              Outcomes that{' '}
+              <span className="italic" style={{ color: '#0066FF' }}>compound.</span>
+            </motion.h2>
+          </div>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-5 text-base text-text-muted font-body max-w-xl mx-auto"
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="font-body text-sm text-text-muted-light leading-[1.8] max-w-xs lg:text-right"
           >
             These aren&apos;t promises. They&apos;re the baseline results our clients see once AI is
             running their most critical workflows.
           </motion.p>
         </div>
 
+        {/* Stats grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, i) => (
             <StatCard key={stat.label} stat={stat} index={i} />
           ))}
         </div>
 
-        {/* Trust strip */}
+        {/* Industry trust strip */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-16 pt-10 border-t border-border-subtle flex flex-wrap items-center justify-center gap-8"
+          transition={{ duration: 0.9, delay: 0.45 }}
+          className="mt-14 pt-10 border-t flex flex-wrap items-center justify-between gap-6"
+          style={{ borderColor: 'rgba(5,5,5,0.1)' }}
         >
-          {['E-commerce', 'SaaS', 'Real Estate', 'Finance', 'Healthcare', 'Logistics'].map((industry) => (
-            <span key={industry} className="text-xs font-body font-medium tracking-widest uppercase text-text-muted">
+          {['E-commerce', 'SaaS', 'Real Estate', 'Finance', 'Healthcare', 'Logistics'].map((industry, i) => (
+            <motion.span
+              key={industry}
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 + 0.5, duration: 0.5 }}
+              className="font-body text-[0.6rem] font-medium tracking-[0.25em] uppercase text-text-muted-light"
+            >
               {industry}
-            </span>
+            </motion.span>
           ))}
         </motion.div>
       </div>

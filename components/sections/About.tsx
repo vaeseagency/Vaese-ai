@@ -2,22 +2,41 @@
 
 import { useRef } from 'react'
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
-import AnimatedText from '@/components/ui/AnimatedText'
+
+const values = [
+  {
+    title: 'Speed without sacrifice',
+    body: "We move fast because we've done this before. Two-week sprints, not six-month engagements.",
+  },
+  {
+    title: 'Built to last',
+    body: 'No black boxes. Every system we deploy is documented, monitored, and yours to own.',
+  },
+  {
+    title: 'Outcomes over outputs',
+    body: 'We measure success the same way you do — revenue, efficiency, time saved.',
+  },
+  {
+    title: 'AI-native, not AI-adjacent',
+    body: 'Every person on our team lives at the frontier. We use what we build.',
+  },
+]
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null)
+  const valuesRef = useRef(null)
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'end start'],
   })
-  const bgY = useTransform(scrollYProgress, [0, 1], ['-5%', '5%'])
+  const bgY = useTransform(scrollYProgress, [0, 1], ['-3%', '3%'])
 
-  const infoRef = useRef(null)
-  const inView = useInView(infoRef, { once: true, margin: '-80px 0px' })
+  const inView = useInView(valuesRef, { once: true, margin: '-60px 0px' })
 
   return (
-    <section id="about" className="section-padding relative overflow-hidden" ref={sectionRef}>
-      {/* Parallax background gradient */}
+    <section id="about" className="section-padding bg-bg-section relative overflow-hidden" ref={sectionRef}>
+      {/* Parallax grid */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         style={{ y: bgY }}
@@ -26,14 +45,23 @@ export default function About() {
         <div
           className="absolute inset-0"
           style={{
-            background:
-              'radial-gradient(ellipse 60% 60% at 30% 50%, rgba(124,92,255,0.08) 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 70% 50%, rgba(34,211,238,0.05) 0%, transparent 60%)',
+            backgroundImage: 'linear-gradient(rgba(5,5,5,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(5,5,5,0.05) 1px, transparent 1px)',
+            backgroundSize: '64px 64px',
           }}
         />
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid lg:grid-cols-[1fr_1fr] gap-16 lg:gap-24 items-center">
+      {/* Electric blue accent — top right corner */}
+      <div
+        className="pointer-events-none absolute top-0 right-0 w-64 h-64"
+        aria-hidden
+        style={{
+          background: 'radial-gradient(circle at top right, rgba(0,102,255,0.06) 0%, transparent 70%)',
+        }}
+      />
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-16 lg:gap-24 items-start">
 
           {/* Left: Manifesto */}
           <div>
@@ -42,33 +70,39 @@ export default function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="text-xs font-body font-medium tracking-widest uppercase text-primary mb-8"
+              className="eyebrow mb-8"
             >
               Our manifesto
             </motion.p>
 
-            <AnimatedText
-              text="AI is the new infrastructure. Not a feature — the foundation."
-              tag="h2"
-              mode="words"
-              delay={0.05}
-              className="font-display font-semibold text-[clamp(1.75rem,3.5vw,2.75rem)] leading-tight text-white mb-8"
-            />
+            <motion.h2
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display font-light text-[clamp(2rem,4vw,3.2rem)] leading-[1.1] tracking-[-0.01em] text-bg mb-9"
+            >
+              AI is the new infrastructure.{' '}
+              <span className="italic" style={{ color: '#0066FF' }}>
+                Not a feature — the foundation.
+              </span>
+            </motion.h2>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              className="space-y-5"
+              transition={{ duration: 0.75, delay: 0.3 }}
+              className="space-y-5 border-l-2 pl-6"
+              style={{ borderColor: 'rgba(5,5,5,0.1)' }}
             >
-              <p className="font-body text-base text-text-muted leading-relaxed">
+              <p className="font-body text-sm text-text-muted-light leading-[1.85]">
                 Every decade, a new layer of infrastructure reshapes what&apos;s possible in business.
                 The internet changed distribution. The cloud changed scale. AI is changing cognition.
                 The companies that build on AI now won&apos;t just move faster — they&apos;ll operate in an entirely
                 different dimension from those that don&apos;t.
               </p>
-              <p className="font-body text-base text-text-muted leading-relaxed">
+              <p className="font-body text-sm text-text-muted-light leading-[1.85]">
                 Vaese AI exists to close that gap for ambitious teams. We&apos;re not here to automate
                 tasks. We&apos;re here to build the autonomous layer that makes your entire operation more
                 intelligent — so you can focus on decisions that actually require humans.
@@ -79,51 +113,43 @@ export default function About() {
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="mt-10 inline-flex items-center gap-3 text-sm font-body font-medium text-primary"
+              transition={{ duration: 0.6, delay: 0.55 }}
+              className="mt-10 flex items-center gap-3"
             >
-              <span
-                className="w-8 h-px"
-                style={{ background: 'linear-gradient(90deg, #7C5CFF, #22D3EE)' }}
-              />
-              Founded to make AI the default, not the exception.
+              <div className="w-8 h-px" style={{ background: '#0066FF' }} aria-hidden />
+              <span className="font-body text-xs font-medium tracking-widest uppercase text-text-muted-light">
+                Founded to make AI the default, not the exception.
+              </span>
             </motion.div>
           </div>
 
           {/* Right: Values */}
-          <div ref={infoRef} className="space-y-5">
-            {[
-              {
-                title: 'Speed without sacrifice',
-                body: "We move fast because we've done this before. Two-week sprints, not six-month engagements.",
-              },
-              {
-                title: 'Built to last',
-                body: 'No black boxes. Every system we deploy is documented, monitored, and yours to own.',
-              },
-              {
-                title: 'Outcomes over outputs',
-                body: 'We measure success the same way you do — revenue, efficiency, time saved.',
-              },
-              {
-                title: 'AI-native, not AI-adjacent',
-                body: 'Every person on our team lives at the frontier. We use what we build.',
-              },
-            ].map((item, i) => (
+          <div ref={valuesRef} className="space-y-0 pt-2">
+            {values.map((item, i) => (
               <motion.div
                 key={item.title}
-                initial={{ opacity: 0, x: 20 }}
-                animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
-                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="flex gap-5 p-5 rounded-xl border border-border-subtle glass group hover:border-primary-border transition-colors duration-400"
+                initial={{ opacity: 0, x: 24 }}
+                animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.65, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                className="flex gap-5 py-7 border-b group"
+                style={{ borderColor: 'rgba(5,5,5,0.1)' }}
               >
-                <div
-                  className="w-1 flex-shrink-0 rounded-full"
-                  style={{ background: i % 2 === 0 ? '#7C5CFF' : '#22D3EE' }}
-                />
+                {/* Step number */}
+                <span
+                  className="font-display font-light text-3xl leading-none select-none w-8 flex-shrink-0 text-right"
+                  style={{ color: 'rgba(0,102,255,0.25)' }}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+
                 <div>
-                  <h3 className="font-display font-semibold text-sm text-white mb-1.5">{item.title}</h3>
-                  <p className="font-body text-sm text-text-muted leading-relaxed">{item.body}</p>
+                  <h3
+                    className="font-body font-semibold text-sm text-bg mb-2 group-hover:text-accent transition-colors duration-300"
+                    style={{ '--accent-color': '#0066FF' } as React.CSSProperties}
+                  >
+                    {item.title}
+                  </h3>
+                  <p className="font-body text-xs text-text-muted-light leading-[1.8]">{item.body}</p>
                 </div>
               </motion.div>
             ))}

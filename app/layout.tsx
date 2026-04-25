@@ -1,19 +1,20 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk, Inter } from 'next/font/google'
+import { Cormorant_Garamond, Plus_Jakarta_Sans } from 'next/font/google'
 import CustomCursor from '@/components/layout/CustomCursor'
 import './globals.css'
 
-const spaceGrotesk = Space_Grotesk({
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
   variable: '--font-display',
   weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
   display: 'swap',
 })
 
-const inter = Inter({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-body',
-  weight: ['300', '400', '500', '600'],
+  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 })
 
@@ -102,8 +103,8 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="nl" className={`${spaceGrotesk.variable} ${inter.variable}`}>
-      <body className="font-body bg-bg text-white antialiased selection:bg-primary/30 selection:text-white">
+    <html lang="nl" className={`${cormorant.variable} ${jakarta.variable}`}>
+      <body className="font-body bg-bg text-white antialiased selection:bg-accent/20 selection:text-white">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

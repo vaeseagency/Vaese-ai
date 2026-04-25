@@ -16,8 +16,8 @@ interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>
 
 const motionProps = {
   whileHover: { scale: 1.02 },
-  whileTap: { scale: 0.98 },
-  transition: { type: 'spring' as const, stiffness: 400, damping: 20 },
+  whileTap: { scale: 0.97 },
+  transition: { type: 'spring' as const, stiffness: 380, damping: 22 },
 }
 
 export default function Button({
@@ -30,24 +30,28 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const base =
-    'relative inline-flex items-center justify-center gap-2 font-display font-medium tracking-wide rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 disabled:opacity-50 disabled:pointer-events-none overflow-hidden select-none'
+    'relative inline-flex items-center justify-center gap-2.5 font-body font-medium tracking-wide rounded-sm transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:opacity-50 disabled:pointer-events-none overflow-hidden select-none'
 
   const variants: Record<Variant, string> = {
-    primary: 'bg-primary text-white hover:bg-primary/90 border border-primary/30',
-    secondary: 'bg-transparent text-white border border-white/10 hover:border-primary/40 hover:bg-primary/5',
-    ghost: 'bg-transparent text-text-muted hover:text-white hover:bg-white/5',
+    primary:
+      'bg-accent text-white hover:bg-[#0052CC] border border-accent/60',
+    secondary:
+      'bg-transparent text-white border border-white/15 hover:border-accent/50 hover:bg-accent/06',
+    ghost:
+      'bg-transparent text-text-muted hover:text-white hover:bg-white/05',
   }
 
+  // Dark section secondary variant — override for light sections
   const sizes: Record<Size, string> = {
-    sm: 'px-5 py-2 text-sm',
+    sm: 'px-5 py-2 text-xs',
     md: 'px-7 py-3 text-sm',
-    lg: 'px-9 py-4 text-base',
+    lg: 'px-10 py-4 text-sm',
   }
 
   const glowEl = glow && variant === 'primary' && (
     <span
-      className="pointer-events-none absolute inset-0 rounded-full animate-glow-pulse"
-      style={{ boxShadow: '0 0 0 8px rgba(124,92,255,0.15), 0 0 0 24px rgba(124,92,255,0.05)' }}
+      className="pointer-events-none absolute inset-0 animate-precision-pulse rounded-sm"
+      style={{ boxShadow: '0 0 0 8px rgba(0,102,255,0.1), 0 0 0 24px rgba(0,102,255,0.04)' }}
       aria-hidden
     />
   )

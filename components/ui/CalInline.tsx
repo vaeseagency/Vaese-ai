@@ -45,7 +45,7 @@ export default function CalInline({ calLink }: { calLink: string }) {
       });
 
       Cal.ns["booking"]("ui", {
-        styles: { branding: { brandColor: "#7C5CFF" } },
+        styles: { branding: { brandColor: "#0066FF" } },
         hideEventTypeDetails: false,
         layout: "month_view",
       });

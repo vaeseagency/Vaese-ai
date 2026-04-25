@@ -3,9 +3,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Globe, Mic, Check, ArrowRight } from 'lucide-react'
-import Card from '@/components/ui/Card'
-import AnimatedText from '@/components/ui/AnimatedText'
-import Button from '@/components/ui/Button'
 
 const services = [
   {
@@ -23,9 +20,9 @@ const services = [
       'Delivered within 2 weeks of kickoff',
       'No hidden fees, no ongoing contracts required',
     ],
-    color: '#7C5CFF',
     cta: 'Get your free website',
     ctaHref: '#contact',
+    index: 0,
   },
   {
     icon: Mic,
@@ -42,38 +39,41 @@ const services = [
       'Multilingual — deploy in any language',
       'Live in 7–14 days, fully customised to your business',
     ],
-    color: '#22D3EE',
     cta: 'Book a strategy call',
     ctaHref: '#contact',
+    index: 1,
   },
 ]
 
-function ServiceCard({ service, index }: { service: (typeof services)[0]; index: number }) {
+function ServiceCard({ service }: { service: (typeof services)[0] }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-60px 0px' })
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 36 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 }}
-      transition={{ duration: 0.75, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 40, rotateX: 8 }}
+      animate={inView ? { opacity: 1, y: 0, rotateX: 0 } : { opacity: 0, y: 40, rotateX: 8 }}
+      transition={{ duration: 0.8, delay: service.index * 0.18, ease: [0.22, 1, 0.36, 1] }}
+      style={{ perspective: '1000px' }}
       className="h-full"
     >
-      <Card className="h-full p-8 lg:p-10 flex flex-col">
+      <div className="card-light h-full flex flex-col p-8 lg:p-10">
         {/* Tag */}
-        <div className="flex items-center gap-2 mb-6">
+        <div className="flex items-center gap-2.5 mb-8">
           <span
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-body font-medium border"
+            className="inline-flex items-center gap-1.5 px-3 py-1 text-[0.65rem] font-body font-medium tracking-widest uppercase border"
             style={{
-              color: service.color,
-              borderColor: `${service.color}30`,
-              background: `${service.color}0D`,
+              color: '#0066FF',
+              borderColor: 'rgba(0,102,255,0.25)',
+              background: 'rgba(0,102,255,0.05)',
             }}
           >
-            <span
-              className="w-1.5 h-1.5 rounded-full animate-pulse"
-              style={{ background: service.color }}
+            <motion.span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ background: '#0066FF' }}
+              animate={inView ? { opacity: [1, 0.3, 1] } : {}}
+              transition={{ duration: 2, repeat: Infinity, delay: service.index * 0.5 }}
               aria-hidden
             />
             {service.tag}
@@ -81,75 +81,83 @@ function ServiceCard({ service, index }: { service: (typeof services)[0]; index:
         </div>
 
         {/* Icon + Title */}
-        <div className="flex items-start gap-5 mb-6">
+        <div className="flex items-start gap-5 mb-7">
           <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 mt-0.5"
-            style={{ background: `${service.color}12`, border: `1px solid ${service.color}25` }}
+            className="w-12 h-12 flex items-center justify-center flex-shrink-0 border"
+            style={{
+              background: 'rgba(0,102,255,0.06)',
+              borderColor: 'rgba(0,102,255,0.18)',
+            }}
           >
-            <service.icon size={26} style={{ color: service.color }} strokeWidth={1.4} />
+            <service.icon size={22} style={{ color: '#0066FF' }} strokeWidth={1.4} />
           </div>
-          <div>
-            <h3 className="font-display font-bold text-[clamp(1.5rem,2.5vw,2rem)] leading-tight text-white">
+          <div className="pt-1">
+            <h3 className="font-display font-medium text-[clamp(1.6rem,2.8vw,2.2rem)] leading-tight text-bg">
               {service.title}
             </h3>
-            <p className="mt-2 text-sm font-body leading-relaxed" style={{ color: service.color }}>
+            <p className="mt-2 text-sm font-body leading-relaxed text-text-muted-light">
               {service.tagline}
             </p>
           </div>
         </div>
 
         {/* Description */}
-        <p className="font-body text-base text-text-muted leading-relaxed mb-7">
+        <p className="font-body text-sm text-text-muted-light leading-[1.8] mb-7">
           {service.description}
         </p>
 
         {/* Divider */}
         <div
           className="w-full h-px mb-7"
-          style={{
-            background: `linear-gradient(90deg, ${service.color}30, transparent)`,
-          }}
+          style={{ background: 'rgba(0,102,255,0.15)' }}
           aria-hidden
         />
 
         {/* Bullets */}
-        <ul className="space-y-3 mb-8 flex-1">
+        <ul className="space-y-3 mb-9 flex-1">
           {service.bullets.map((bullet) => (
             <li key={bullet} className="flex items-start gap-3">
               <Check
-                size={15}
-                className="flex-shrink-0 mt-0.5"
-                style={{ color: service.color }}
+                size={13}
+                className="flex-shrink-0 mt-[3px]"
+                style={{ color: '#0066FF' }}
                 strokeWidth={2.5}
               />
-              <span className="font-body text-sm text-text-muted leading-relaxed">{bullet}</span>
+              <span className="font-body text-sm text-text-muted-light leading-relaxed">{bullet}</span>
             </li>
           ))}
         </ul>
 
         {/* CTA */}
-        <Button
-          variant={index === 0 ? 'primary' : 'secondary'}
-          size="md"
-          glow={index === 0}
+        <motion.a
           href={service.ctaHref}
-          className="w-full group mt-auto"
+          className="group inline-flex items-center gap-2.5 mt-auto font-body text-sm font-medium"
+          style={{ color: '#0066FF' }}
+          whileHover={{ x: 3 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 20 }}
         >
           {service.cta}
-          <ArrowRight
-            size={15}
-            className="transition-transform duration-200 group-hover:translate-x-1"
-          />
-        </Button>
-      </Card>
+          <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-1" />
+        </motion.a>
+      </div>
     </motion.div>
   )
 }
 
 export default function Services() {
   return (
-    <section id="services" className="section-padding">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <section id="services" className="section-padding bg-bg-section">
+      {/* Precise grid background on light section */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden
+        style={{
+          backgroundImage: 'linear-gradient(rgba(5,5,5,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(5,5,5,0.05) 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
+        }}
+      />
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
         <div className="max-w-2xl mb-16">
           <motion.p
@@ -157,24 +165,28 @@ export default function Services() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-xs font-body font-medium tracking-widest uppercase text-primary mb-4"
+            className="eyebrow mb-5"
           >
             What we offer
           </motion.p>
 
-          <AnimatedText
-            text="Two offers. Both exceptional."
-            tag="h2"
-            mode="words"
-            className="font-display font-semibold text-[clamp(2rem,4.5vw,3.5rem)] leading-tight text-white"
-          />
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="font-display font-light text-[clamp(2.4rem,5vw,4rem)] leading-[1.05] tracking-[-0.01em] text-bg"
+          >
+            Two offers.{' '}
+            <span className="italic" style={{ color: '#0066FF' }}>Both exceptional.</span>
+          </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-5 text-base text-text-muted font-body leading-relaxed"
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="mt-6 text-sm text-text-muted-light font-body leading-[1.8] max-w-md"
           >
             We keep our focus tight so we can deliver at the highest level. A free website to
             start the relationship — and an AI voice agent to transform how you handle every call.
@@ -182,9 +194,9 @@ export default function Services() {
         </div>
 
         {/* Two-column cards */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {services.map((service, i) => (
-            <ServiceCard key={service.title} service={service} index={i} />
+        <div className="grid md:grid-cols-2 gap-5">
+          {services.map((service) => (
+            <ServiceCard key={service.title} service={service} />
           ))}
         </div>
       </div>

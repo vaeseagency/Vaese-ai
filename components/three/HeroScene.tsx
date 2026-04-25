@@ -33,11 +33,11 @@ function ParticleField() {
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
       pos[i * 3 + 2] = (Math.random() - 0.5) * 6
 
-      // Mix violet and cyan
+      // Mix electric blue (#0066FF) and white
       const mix = Math.random()
-      col[i * 3] = 0.48 * (1 - mix) + 0.13 * mix       // R
-      col[i * 3 + 1] = 0.36 * (1 - mix) + 0.83 * mix   // G
-      col[i * 3 + 2] = 1.0 * (1 - mix) + 0.93 * mix    // B
+      col[i * 3] = 0.0 * (1 - mix) + 1.0 * mix       // R: blue→white
+      col[i * 3 + 1] = 0.4 * (1 - mix) + 1.0 * mix   // G
+      col[i * 3 + 2] = 1.0 * (1 - mix) + 1.0 * mix   // B
     }
     return [pos, col]
   }, [])
@@ -83,40 +83,40 @@ function WireframeOrb({ mouse }: { mouse: React.MutableRefObject<{ x: number; y:
 
   return (
     <group ref={groupRef}>
-      {/* Core wireframe icosahedron */}
+      {/* Core wireframe icosahedron — electric blue */}
       <mesh>
         <icosahedronGeometry args={[1.65, 1]} />
-        <meshBasicMaterial color="#7C5CFF" wireframe transparent opacity={0.32} />
+        <meshBasicMaterial color="#0066FF" wireframe transparent opacity={0.3} />
       </mesh>
 
       {/* Semi-transparent inner shell */}
       <mesh>
         <icosahedronGeometry args={[1.62, 1]} />
-        <meshBasicMaterial color="#7C5CFF" transparent opacity={0.04} side={THREE.BackSide} />
+        <meshBasicMaterial color="#0066FF" transparent opacity={0.03} side={THREE.BackSide} />
       </mesh>
 
       {/* Outer icosahedron for depth */}
       <mesh>
         <icosahedronGeometry args={[2.1, 1]} />
-        <meshBasicMaterial color="#7C5CFF" wireframe transparent opacity={0.08} />
+        <meshBasicMaterial color="#3385FF" wireframe transparent opacity={0.07} />
       </mesh>
 
-      {/* Orbital ring 1 — equatorial */}
+      {/* Orbital ring 1 — equatorial, white */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[2.5, 0.007, 16, 120]} />
-        <meshBasicMaterial color="#22D3EE" transparent opacity={0.45} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.35} />
       </mesh>
 
-      {/* Orbital ring 2 — tilted */}
+      {/* Orbital ring 2 — tilted, electric blue */}
       <mesh rotation={[Math.PI / 3.5, Math.PI / 5, 0]}>
         <torusGeometry args={[2.85, 0.005, 16, 120]} />
-        <meshBasicMaterial color="#7C5CFF" transparent opacity={0.28} />
+        <meshBasicMaterial color="#0066FF" transparent opacity={0.5} />
       </mesh>
 
-      {/* Orbital ring 3 — counter-tilted */}
+      {/* Orbital ring 3 — counter-tilted, white */}
       <mesh rotation={[-Math.PI / 4, Math.PI / 3, Math.PI / 8]}>
         <torusGeometry args={[3.1, 0.004, 16, 120]} />
-        <meshBasicMaterial color="#22D3EE" transparent opacity={0.15} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.12} />
       </mesh>
     </group>
   )

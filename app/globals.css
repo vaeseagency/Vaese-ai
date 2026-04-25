@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --bg: #05060A;
-  --primary: #7C5CFF;
-  --cyan: #22D3EE;
+  --bg: #050505;
+  --bg-section: #F5F5F0;
+  --accent: #0066FF;
 }
 
 * {
@@ -17,24 +17,24 @@
 html {
   scroll-behavior: smooth;
   scrollbar-width: thin;
-  scrollbar-color: rgba(124, 92, 255, 0.3) transparent;
+  scrollbar-color: rgba(0, 102, 255, 0.25) transparent;
 }
 
 body {
   background-color: var(--bg);
-  color: #f0f0ff;
+  color: #ffffff;
   overflow-x: hidden;
 }
 
 /* Webkit scrollbar */
-::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar { width: 2px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(124, 92, 255, 0.35);
-  border-radius: 2px;
+  background: rgba(0, 102, 255, 0.3);
+  border-radius: 1px;
 }
 
-/* Grain texture — fixed overlay */
+/* Grain texture — minimal, precise */
 body::after {
   content: '';
   position: fixed;
@@ -43,7 +43,7 @@ body::after {
   height: 100%;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.028;
+  opacity: 0.022;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
 }
 
@@ -54,9 +54,9 @@ body::after {
 
 /* Focus styles */
 :focus-visible {
-  outline: 2px solid rgba(124, 92, 255, 0.7);
+  outline: 2px solid rgba(0, 102, 255, 0.7);
   outline-offset: 3px;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 /* Reduced motion */
@@ -69,65 +69,112 @@ body::after {
   }
 }
 
-/* Gradient text utility */
-.gradient-text {
-  background: linear-gradient(135deg, #fff 0%, rgba(200, 190, 255, 0.9) 60%, #22D3EE 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Accent text utility */
+.text-accent-clip {
+  color: var(--accent);
 }
 
-.gradient-text-primary {
-  background: linear-gradient(135deg, #9d87ff 0%, #7C5CFF 50%, #22D3EE 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Animated gradient background */
-.animated-gradient {
-  background: linear-gradient(
-    -45deg,
-    rgba(124, 92, 255, 0.15),
-    rgba(34, 211, 238, 0.08),
-    rgba(124, 92, 255, 0.05),
-    rgba(34, 211, 238, 0.12)
-  );
-  background-size: 400% 400%;
-  animation: gradientShift 12s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Glass card */
-.glass {
-  background: rgba(10, 11, 20, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Luminous border */
-.border-luminous {
-  border: 1px solid rgba(124, 92, 255, 0.15);
-}
-
-.border-luminous:hover {
-  border-color: rgba(124, 92, 255, 0.35);
+/* Horizontal rule accent */
+.rule-accent {
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: var(--accent);
 }
 
 /* Section spacing */
 .section-padding {
-  padding-top: 8rem;
-  padding-bottom: 8rem;
+  padding-top: 9rem;
+  padding-bottom: 9rem;
 }
 
 @media (max-width: 768px) {
   .section-padding {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
+    padding-top: 5.5rem;
+    padding-bottom: 5.5rem;
   }
+}
+
+/* Eyebrow label */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Draw-in underline for nav links */
+.nav-link::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Geometric section divider */
+.geo-divider {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  overflow: visible;
+}
+.geo-divider::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 80px;
+  height: 5px;
+  background: var(--accent);
+}
+
+/* Card on dark background */
+.card-dark {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.card-dark:hover {
+  border-color: rgba(0,102,255,0.25);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,102,255,0.18);
+  transform: translateY(-3px);
+}
+
+/* Card on light background */
+.card-light {
+  background: #ffffff;
+  border: 1px solid rgba(5,5,5,0.09);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.card-light:hover {
+  border-color: rgba(0,102,255,0.28);
+  box-shadow: 0 20px 56px rgba(0,0,0,0.09);
+  transform: translateY(-3px);
+}
+
+/* Magnetic button base */
+.btn-magnetic {
+  position: relative;
+  transition: transform 0.15s ease;
+}
+
+/* Precision accent — vertical bar */
+.accent-bar {
+  display: block;
+  width: 1px;
+  background: var(--accent);
+  flex-shrink: 0;
 }
