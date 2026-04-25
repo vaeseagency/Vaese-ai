@@ -5,6 +5,7 @@ import Services from '@/components/sections/Services'
 import Process from '@/components/sections/Process'
 import WhyVaese from '@/components/sections/WhyVaese'
 import Work from '@/components/sections/Work'
+import ParticleSection from '@/components/sections/ParticleSection'
 import About from '@/components/sections/About'
 import CTA from '@/components/sections/CTA'
 
@@ -18,6 +19,7 @@ export default function Home() {
         <Process />
         <WhyVaese />
         <Work />
+        <ParticleSection />
         <About />
         <CTA />
       </main>
